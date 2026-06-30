@@ -1,0 +1,88 @@
+<div class="min-h-screen bg-deba-bg flex font-sans text-deba-dark">
+  <!-- Sidebar Gauche -->
+  <aside class="w-64 bg-deba-dark text-white flex flex-col justify-between p-6 hidden md:flex shadow-xl">
+    <div>
+      <div class="flex items-center gap-3 mb-10 pb-4 border-b border-slate-700">
+        <div class="bg-white p-2 rounded-full shadow-md text-xl">✈️</div>
+        <div>
+          <h1 class="text-xl font-black tracking-wider text-white">DEBAEXPRESS</h1>
+          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">By Air To Your Door</p>
+        </div>
+      </div>
+
+      <nav class="space-y-3">
+        <a href="#" class="flex items-center gap-3 bg-deba-steel text-white px-4 py-3 rounded-xl font-medium shadow-md">
+          📥 Enregistrer un Colis
+        </a>
+        <a href="#" class="flex items-center gap-3 text-slate-300 hover:bg-slate-800 px-4 py-3 rounded-xl font-medium transition-all">
+          📦 Suivi des Envois
+        </a>
+      </nav>
+    </div>
+    <div class="text-xs text-slate-400 text-center border-t border-slate-700 pt-4">Deba Express Premium v1.0</div>
+  </aside>
+
+  <!-- Contenu Principal -->
+  <main class="flex-1 p-6 md:p-10 overflow-y-auto">
+    <header class="flex justify-between items-center mb-8">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-deba-dark">Nouveau Colis & Facturation</h2>
+        <p class="text-sm text-slate-500">Enregistrez l'expédition et générez le reçu instantanément.</p>
+      </div>
+      <div class="bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+        <span class="text-xs font-semibold text-slate-600">Application Opérationnelle</span>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Formulaire -->
+      <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+        <h3 class="text-lg font-bold mb-5 border-b pb-2 text-deba-steel">1. Détails de l'Expédition</h3>
+        <form class="space-y-5">
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Sélectionner le Client</label>
+            <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-deba-steel">
+              <option>Amadou Diallo (+224 6xx xx xx)</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Catégorie du Colis</label>
+              <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-deba-steel">
+                <option>ÉLECTRONIQUE</option>
+                <option>DOCUMENT</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Poids Estimé (KG)</label>
+              <input type="number" placeholder="4.5" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-deba-steel">
+            </div>
+          </div>
+          <button type="button" class="w-full bg-deba-dark hover:bg-opacity-90 text-white font-bold py-4 rounded-xl shadow-md transition-all">
+            💾 Enregistrer & Générer la Facture
+          </button>
+        </form>
+      </div>
+
+      <!-- Facture Live Preview -->
+      <div class="bg-white rounded-2xl p-6 shadow-md border-t-4 border-deba-steel relative overflow-hidden">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <h4 class="font-black text-sm tracking-widest text-deba-dark">DEBA EXPRESS</h4>
+            <p class="text-[9px] text-slate-400">FACTURE PROVISOIRE</p>
+          </div>
+          <span class="bg-deba-light text-deba-dark text-[10px] font-bold px-2 py-1 rounded">Aperçu</span>
+        </div>
+        <div class="space-y-4 border-b pb-4 mb-4 text-sm">
+          <div class="flex justify-between text-slate-500"><span>Poids brut :</span><span class="font-medium text-slate-800">4.5 kg</span></div>
+          <div class="flex justify-between text-slate-500"><span>Tarif de base / Air :</span><span class="font-medium text-slate-800">12.00 € / kg</span></div>
+        </div>
+        <div class="space-y-2 bg-deba-bg p-4 rounded-xl mb-4">
+          <div class="flex justify-between font-bold text-base text-deba-dark pt-2"><span>Total TTC</span><span>54.00 €</span></div>
+        </div>
+        <p class="text-[10px] text-slate-400 text-center italic">Un SMS automatique sera envoyé au client après validation.</p>
+      </div>
+    </div>
+  </main>
+</div>

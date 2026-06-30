@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider   = "prisma-client-js"
+  output     = "../src/generated/client"
+  engineType = "library" // FORCER LE MOTEUR DIRECT SANS ADAPTATEUR
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CategoryColis {
+  DOCUMENT
+  ELECTRONIQUE
+  VETEMENT
+  FRAGILE
+  AUTRE
+}
+
+enum StatutEnvoi {
+  ENREGISTRE
+  EN_ENTREPOT
+  EN_VOL
+  DOUANE
+  ARRIVE_DESTINATION
+  LIVRE
+}
+
+model Client {
+  id        String   @id @default(uuid())
+  nom       String
+  email     String   @unique
+  telephone String
+  adresse   String
+  colis     Colis[]  @relation("ClientExpediteur")
+  createdAt DateTime @default(now())
+}
+
+model Colis {
+  id           String        @id @default(uuid())
+  codeSuivi    String        @unique
+  description  String?
+  categorie    CategoryColis
+  poids        Float
+  prixCalculer Float
+  statut       StatutEnvoi   @default(ENREGISTRE)
+
+  expediteurId String
+  // AJOUT : references: [id] pour pointer vers le Client
+  expediteur   Client @relation("ClientExpediteur", fields: [expediteurId], references: [id], onDelete: Cascade)
+
+  facture   Facture?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Facture {
+  id         String  @id @default(uuid())
+  numeroFact String  @unique
+  montantHT  Float
+  tva        Float   @default(0.18)
+  montantTTC Float
+  estPaye    Boolean @default(false)
+
+  colisId String @unique
+  // AJOUT : references: [id] pour pointer vers le Colis
+  colis   Colis  @relation(fields: [colisId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}

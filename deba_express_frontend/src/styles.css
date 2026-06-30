@@ -1,0 +1,10 @@
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+@theme {
+  /* Classes sur-mesure pour Deba Express */
+  --color-deba-dark: #0A2540;   /* S'utilise via la classe bg-deba-dark ou text-deba-dark */
+  --color-deba-steel: #486581;  /* S'utilise via bg-deba-steel ou text-deba-steel */
+  --color-deba-light: #D9E2EC;  /* S'utilise via bg-deba-light ou text-deba-light */
+  --color-deba-bg: #F0F4F8;     /* S'utilise via bg-deba-bg */
+}
