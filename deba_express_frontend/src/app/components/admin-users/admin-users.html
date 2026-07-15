@@ -1,0 +1,113 @@
+<div class="min-h-screen bg-deba-bg p-6 md:p-10 font-sans text-deba-dark">
+  
+  <!-- Header de la page d'administration -->
+  <header class="max-w-4xl mx-auto mb-8 flex justify-between items-center">
+    <div>
+      <h2 class="text-2xl font-extrabold tracking-tight text-deba-dark">Contrôle des Accès & Profils</h2>
+      <p class="text-sm text-slate-500">Ajoutez de nouveaux collaborateurs et configurez leurs habilitations sur Deba Express.</p>
+    </div>
+    <span class="bg-deba-dark text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Zone Admin</span>
+  </header>
+
+  <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+    
+    <!-- Colonne Formulaire (Prend 2 colonnes) -->
+    <div class="md:col-span-2 bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-100">
+      <h3 class="text-lg font-bold mb-6 text-deba-steel border-b pb-3">➕ Enregistrer un nouvel agent</h3>
+
+      <!-- Alertes de retour d'état -->
+      @if (erreurMessage()) {
+        <div class="mb-5 p-4 bg-red-50 border-l-4 border-red-500 rounded-xl text-red-700 text-sm font-medium">
+          ⚠️ {{ erreurMessage() }}
+        </div>
+      }
+      @if (succesMessage()) {
+        <div class="mb-5 p-4 bg-green-50 border-l-4 border-green-500 rounded-xl text-green-700 text-sm font-medium">
+          ✅ {{ succesMessage() }}
+        </div>
+      }
+
+      <form (ngSubmit)="creerUtilisateur()" class="space-y-5">
+        
+        <!-- Email -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Adresse Email Professionnelle</label>
+          <input 
+            type="email" 
+            name="email"
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event)"
+            placeholder="nom.prenom@debaexpress.com"
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-deba-steel focus:bg-white transition-all text-deba-dark"
+          >
+        </div>
+
+        <!-- Mot de Passe Provisoire -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Mot de passe temporaire</label>
+          <input 
+            type="password" 
+            name="motDePasse"
+            [ngModel]="motDePasse()"
+            (ngModelChange)="motDePasse.set($event)"
+            placeholder="••••••••••••"
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-deba-steel focus:bg-white transition-all text-deba-dark"
+          >
+        </div>
+
+        <!-- Sélection du Rôle -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Niveau d'accréditation (Rôle)</label>
+          <select 
+            name="role"
+            [ngModel]="roleChoisi()"
+            (ngModelChange)="roleChoisi.set($event)"
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-deba-steel focus:bg-white transition-all text-deba-dark font-medium"
+          >
+            <option value="GESTIONNAIRE">💼 GESTIONNAIRE (Enregistrement colis, facturation, suivi)</option>
+            <option value="ADMINISTRATEUR">👑 ADMINISTRATEUR (Accès total, gestion des tarifs & profils)</option>
+          </select>
+        </div>
+
+        <!-- Bouton de soumission -->
+        <button 
+          type="submit" 
+          [disabled]="isLoading()"
+          class="w-full bg-deba-dark hover:bg-opacity-95 text-white font-bold py-4 rounded-xl shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-4"
+        >
+          @if (isLoading()) {
+            <span class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            <span>Génération du profil...</span>
+          } @else {
+            <span>💾 Valider la création du compte</span>
+          }
+        </button>
+
+      </form>
+    </div>
+
+    <!-- Panneau explicatif (Prend 1 colonne) -->
+    <div class="bg-deba-dark text-white rounded-3xl p-6 relative overflow-hidden shadow-lg flex flex-col justify-between">
+      <div class="absolute -top-10 -right-10 text-9xl opacity-5 pointer-events-none">✈️</div>
+      
+      <div>
+        <h4 class="font-extrabold text-sm uppercase tracking-wider mb-4 border-b border-slate-700 pb-2">Rappel des Droits</h4>
+        <ul class="space-y-4 text-xs text-slate-300">
+          <li>
+            <strong class="text-white block font-bold mb-0.5">👑 Administrateur</strong>
+            Peut modifier les grilles tarifaires de fret, ajouter ou révoquer les comptes du personnel Deba Express.
+          </li>
+          <li>
+            <strong class="text-white block font-bold mb-0.5">💼 Gestionnaire</strong>
+            Peut inscrire les expéditeurs, peser les colis, éditer les reçus de paiement et mettre à jour le statut logistique.
+          </li>
+        </ul>
+      </div>
+
+      <p class="text-[10px] text-slate-400 text-center italic mt-6">
+        Toutes les créations de compte sont auditées et journalisées dans la base PostgreSQL.
+      </p>
+    </div>
+
+  </div>
+</div>

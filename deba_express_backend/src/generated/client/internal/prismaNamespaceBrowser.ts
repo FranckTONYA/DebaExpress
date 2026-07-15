@@ -55,7 +55,8 @@ export const ModelName = {
   SousCategorieColis: 'SousCategorieColis',
   Client: 'Client',
   Colis: 'Colis',
-  Facture: 'Facture'
+  Facture: 'Facture',
+  Utilisateur: 'Utilisateur'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -146,6 +147,18 @@ export const FactureScalarFieldEnum = {
 } as const
 
 export type FactureScalarFieldEnum = (typeof FactureScalarFieldEnum)[keyof typeof FactureScalarFieldEnum]
+
+
+export const UtilisateurScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  motDePasse: 'motDePasse',
+  role: 'role',
+  createdAt: 'createdAt',
+  clientId: 'clientId'
+} as const
+
+export type UtilisateurScalarFieldEnum = (typeof UtilisateurScalarFieldEnum)[keyof typeof UtilisateurScalarFieldEnum]
 
 
 export const SortOrder = {

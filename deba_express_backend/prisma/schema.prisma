@@ -24,6 +24,12 @@ enum StatutEnvoi {
   LIVRE
 }
 
+enum Role {
+  ADMINISTRATEUR
+  GESTIONNAIRE
+  CLIENT
+}
+
 model CategorieColis {
   id             String               @id @default(uuid())
   nom            String               @unique // Ex: "Électronique", "Vêtements"
@@ -42,7 +48,6 @@ model SousCategorieColis {
   nom          String         // Ex: "Téléphone", "Ordinateur", "Robe"
   
   // OPTIONNELS (?) : Si présents, ils écrasent les valeurs de la catégorie.
-  // Si null, l'API lira automatiquement les valeurs de la catégorie parente.
   prixUnitaire Float?         
   mesure       TypeMesure?    
   
@@ -64,6 +69,10 @@ model Client {
   telephone       String
   adresse         String
   colis           Colis[]  @relation("ClientExpediteur")
+  
+  // CORRECTION : Ajout de la relation inverse vers Utilisateur
+  utilisateur     Utilisateur?
+  
   createdAt       DateTime @default(now())
 }
 
@@ -107,4 +116,15 @@ model Facture {
   colis       Colis    @relation(fields: [colisId], references: [id], onDelete: Cascade)
   
   createdAt   DateTime @default(now())
+}
+
+model Utilisateur {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  motDePasse String   // Hash bcrypt
+  role       Role     @default(CLIENT)
+  createdAt  DateTime @default(now())
+
+  clientId   String?  @unique
+  client     Client?  @relation(fields: [clientId], references: [id], onDelete: Cascade)
 }

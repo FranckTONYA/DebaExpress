@@ -42,3 +42,8 @@ export type Colis = Prisma.ColisModel
  * 
  */
 export type Facture = Prisma.FactureModel
+/**
+ * Model Utilisateur
+ * 
+ */
+export type Utilisateur = Prisma.UtilisateurModel

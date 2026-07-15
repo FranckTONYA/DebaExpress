@@ -207,6 +207,7 @@ export type ClientWhereInput = {
   adresse?: Prisma.StringFilter<"Client"> | string
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   colis?: Prisma.ColisListRelationFilter
+  utilisateur?: Prisma.XOR<Prisma.UtilisateurNullableScalarRelationFilter, Prisma.UtilisateurWhereInput> | null
 }
 
 export type ClientOrderByWithRelationInput = {
@@ -219,6 +220,7 @@ export type ClientOrderByWithRelationInput = {
   adresse?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   colis?: Prisma.ColisOrderByRelationAggregateInput
+  utilisateur?: Prisma.UtilisateurOrderByWithRelationInput
 }
 
 export type ClientWhereUniqueInput = Prisma.AtLeast<{
@@ -234,6 +236,7 @@ export type ClientWhereUniqueInput = Prisma.AtLeast<{
   adresse?: Prisma.StringFilter<"Client"> | string
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   colis?: Prisma.ColisListRelationFilter
+  utilisateur?: Prisma.XOR<Prisma.UtilisateurNullableScalarRelationFilter, Prisma.UtilisateurWhereInput> | null
 }, "id" | "numeroClient" | "email">
 
 export type ClientOrderByWithAggregationInput = {
@@ -274,6 +277,7 @@ export type ClientCreateInput = {
   adresse: string
   createdAt?: Date | string
   colis?: Prisma.ColisCreateNestedManyWithoutExpediteurInput
+  utilisateur?: Prisma.UtilisateurCreateNestedOneWithoutClientInput
 }
 
 export type ClientUncheckedCreateInput = {
@@ -286,6 +290,7 @@ export type ClientUncheckedCreateInput = {
   adresse: string
   createdAt?: Date | string
   colis?: Prisma.ColisUncheckedCreateNestedManyWithoutExpediteurInput
+  utilisateur?: Prisma.UtilisateurUncheckedCreateNestedOneWithoutClientInput
 }
 
 export type ClientUpdateInput = {
@@ -298,6 +303,7 @@ export type ClientUpdateInput = {
   adresse?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   colis?: Prisma.ColisUpdateManyWithoutExpediteurNestedInput
+  utilisateur?: Prisma.UtilisateurUpdateOneWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateInput = {
@@ -310,6 +316,7 @@ export type ClientUncheckedUpdateInput = {
   adresse?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   colis?: Prisma.ColisUncheckedUpdateManyWithoutExpediteurNestedInput
+  utilisateur?: Prisma.UtilisateurUncheckedUpdateOneWithoutClientNestedInput
 }
 
 export type ClientCreateManyInput = {
@@ -383,6 +390,11 @@ export type ClientScalarRelationFilter = {
   isNot?: Prisma.ClientWhereInput
 }
 
+export type ClientNullableScalarRelationFilter = {
+  is?: Prisma.ClientWhereInput | null
+  isNot?: Prisma.ClientWhereInput | null
+}
+
 export type ClientCreateNestedOneWithoutColisInput = {
   create?: Prisma.XOR<Prisma.ClientCreateWithoutColisInput, Prisma.ClientUncheckedCreateWithoutColisInput>
   connectOrCreate?: Prisma.ClientCreateOrConnectWithoutColisInput
@@ -397,6 +409,22 @@ export type ClientUpdateOneRequiredWithoutColisNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClientUpdateToOneWithWhereWithoutColisInput, Prisma.ClientUpdateWithoutColisInput>, Prisma.ClientUncheckedUpdateWithoutColisInput>
 }
 
+export type ClientCreateNestedOneWithoutUtilisateurInput = {
+  create?: Prisma.XOR<Prisma.ClientCreateWithoutUtilisateurInput, Prisma.ClientUncheckedCreateWithoutUtilisateurInput>
+  connectOrCreate?: Prisma.ClientCreateOrConnectWithoutUtilisateurInput
+  connect?: Prisma.ClientWhereUniqueInput
+}
+
+export type ClientUpdateOneWithoutUtilisateurNestedInput = {
+  create?: Prisma.XOR<Prisma.ClientCreateWithoutUtilisateurInput, Prisma.ClientUncheckedCreateWithoutUtilisateurInput>
+  connectOrCreate?: Prisma.ClientCreateOrConnectWithoutUtilisateurInput
+  upsert?: Prisma.ClientUpsertWithoutUtilisateurInput
+  disconnect?: Prisma.ClientWhereInput | boolean
+  delete?: Prisma.ClientWhereInput | boolean
+  connect?: Prisma.ClientWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClientUpdateToOneWithWhereWithoutUtilisateurInput, Prisma.ClientUpdateWithoutUtilisateurInput>, Prisma.ClientUncheckedUpdateWithoutUtilisateurInput>
+}
+
 export type ClientCreateWithoutColisInput = {
   id?: string
   numeroClient: string
@@ -406,6 +434,7 @@ export type ClientCreateWithoutColisInput = {
   telephone: string
   adresse: string
   createdAt?: Date | string
+  utilisateur?: Prisma.UtilisateurCreateNestedOneWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutColisInput = {
@@ -417,6 +446,7 @@ export type ClientUncheckedCreateWithoutColisInput = {
   telephone: string
   adresse: string
   createdAt?: Date | string
+  utilisateur?: Prisma.UtilisateurUncheckedCreateNestedOneWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutColisInput = {
@@ -444,6 +474,7 @@ export type ClientUpdateWithoutColisInput = {
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  utilisateur?: Prisma.UtilisateurUpdateOneWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutColisInput = {
@@ -455,6 +486,71 @@ export type ClientUncheckedUpdateWithoutColisInput = {
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  utilisateur?: Prisma.UtilisateurUncheckedUpdateOneWithoutClientNestedInput
+}
+
+export type ClientCreateWithoutUtilisateurInput = {
+  id?: string
+  numeroClient: string
+  nom: string
+  prenom: string
+  email: string
+  telephone: string
+  adresse: string
+  createdAt?: Date | string
+  colis?: Prisma.ColisCreateNestedManyWithoutExpediteurInput
+}
+
+export type ClientUncheckedCreateWithoutUtilisateurInput = {
+  id?: string
+  numeroClient: string
+  nom: string
+  prenom: string
+  email: string
+  telephone: string
+  adresse: string
+  createdAt?: Date | string
+  colis?: Prisma.ColisUncheckedCreateNestedManyWithoutExpediteurInput
+}
+
+export type ClientCreateOrConnectWithoutUtilisateurInput = {
+  where: Prisma.ClientWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClientCreateWithoutUtilisateurInput, Prisma.ClientUncheckedCreateWithoutUtilisateurInput>
+}
+
+export type ClientUpsertWithoutUtilisateurInput = {
+  update: Prisma.XOR<Prisma.ClientUpdateWithoutUtilisateurInput, Prisma.ClientUncheckedUpdateWithoutUtilisateurInput>
+  create: Prisma.XOR<Prisma.ClientCreateWithoutUtilisateurInput, Prisma.ClientUncheckedCreateWithoutUtilisateurInput>
+  where?: Prisma.ClientWhereInput
+}
+
+export type ClientUpdateToOneWithWhereWithoutUtilisateurInput = {
+  where?: Prisma.ClientWhereInput
+  data: Prisma.XOR<Prisma.ClientUpdateWithoutUtilisateurInput, Prisma.ClientUncheckedUpdateWithoutUtilisateurInput>
+}
+
+export type ClientUpdateWithoutUtilisateurInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  numeroClient?: Prisma.StringFieldUpdateOperationsInput | string
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  prenom?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  telephone?: Prisma.StringFieldUpdateOperationsInput | string
+  adresse?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  colis?: Prisma.ColisUpdateManyWithoutExpediteurNestedInput
+}
+
+export type ClientUncheckedUpdateWithoutUtilisateurInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  numeroClient?: Prisma.StringFieldUpdateOperationsInput | string
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  prenom?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  telephone?: Prisma.StringFieldUpdateOperationsInput | string
+  adresse?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  colis?: Prisma.ColisUncheckedUpdateManyWithoutExpediteurNestedInput
 }
 
 
@@ -498,6 +594,7 @@ export type ClientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   adresse?: boolean
   createdAt?: boolean
   colis?: boolean | Prisma.Client$colisArgs<ExtArgs>
+  utilisateur?: boolean | Prisma.Client$utilisateurArgs<ExtArgs>
   _count?: boolean | Prisma.ClientCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["client"]>
 
@@ -537,6 +634,7 @@ export type ClientSelectScalar = {
 export type ClientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "numeroClient" | "nom" | "prenom" | "email" | "telephone" | "adresse" | "createdAt", ExtArgs["result"]["client"]>
 export type ClientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   colis?: boolean | Prisma.Client$colisArgs<ExtArgs>
+  utilisateur?: boolean | Prisma.Client$utilisateurArgs<ExtArgs>
   _count?: boolean | Prisma.ClientCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClientIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -546,6 +644,7 @@ export type $ClientPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "Client"
   objects: {
     colis: Prisma.$ColisPayload<ExtArgs>[]
+    utilisateur: Prisma.$UtilisateurPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -951,6 +1050,7 @@ readonly fields: ClientFieldRefs;
 export interface Prisma__ClientClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   colis<T extends Prisma.Client$colisArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$colisArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ColisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  utilisateur<T extends Prisma.Client$utilisateurArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$utilisateurArgs<ExtArgs>>): Prisma.Prisma__UtilisateurClient<runtime.Types.Result.GetResult<Prisma.$UtilisateurPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1402,6 +1502,25 @@ export type Client$colisArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.ColisScalarFieldEnum | Prisma.ColisScalarFieldEnum[]
+}
+
+/**
+ * Client.utilisateur
+ */
+export type Client$utilisateurArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Utilisateur
+   */
+  select?: Prisma.UtilisateurSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Utilisateur
+   */
+  omit?: Prisma.UtilisateurOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UtilisateurInclude<ExtArgs> | null
+  where?: Prisma.UtilisateurWhereInput
 }
 
 /**

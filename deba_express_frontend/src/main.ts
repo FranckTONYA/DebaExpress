@@ -1,16 +1,19 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config.js'; // Conservez l'import de config d'origine
+import { appConfig } from './app/app.config.js'; 
 import { Component } from '@angular/core';
-import { DashboardComponent } from './app/components/dashboard/dashboard';
+// 1. IMPORTATION CRITIQUE : Importer le module du Routeur
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [DashboardComponent], // Angular peut maintenant analyser statiquement ce composant
-  template: `<app-dashboard></app-dashboard>`
+  // 2. IMPORTS : Remplacer DashboardComponent par RouterOutlet
+  imports: [RouterOutlet], 
+  // 3. TEMPLATE : Remplacer l'affichage fixe par la balise dynamique du routeur
+  template: `<router-outlet></router-outlet>`,
+  styleUrl: './styles.css'
 })
-export class AppRootComponent {} // CORRECTION 2 : Changement de nom pour éviter le conflit avec l'import 'App'
+export class AppRootComponent {} 
 
-// Lancement de l'application avec le nouveau composant racine nettoyé
 bootstrapApplication(AppRootComponent, appConfig)
   .catch((err) => console.error(err));

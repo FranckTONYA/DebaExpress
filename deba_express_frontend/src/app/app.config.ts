@@ -1,12 +1,28 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+// CORRECTION : Utilisation de l'import stable sans le mot "Experimental"
+import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-
-import { routes } from './app.routes';
-import { provideClientHydration } from '@angular/platform-browser';
+import { routes } from './app.routes.js'; 
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { AuthService } from './services/auth.service.js';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideRouter(routes), provideClientHydration()
+    // Validation du mode Zoneless natif ultra-léger
+    provideZonelessChangeDetection(),
+    provideRouter(routes), 
+    provideHttpClient(
+      withInterceptors([
+        (req, next) => {
+          const token = inject(AuthService).getToken();
+          if (token) {
+            req = req.clone({
+              setHeaders: { Authorization: `Bearer ${token}` }
+            });
+          }
+          return next(req);
+        }
+      ])
+    )
   ]
 };

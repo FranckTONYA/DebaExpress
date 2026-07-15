@@ -27,3 +27,12 @@ export const StatutEnvoi = {
 } as const
 
 export type StatutEnvoi = (typeof StatutEnvoi)[keyof typeof StatutEnvoi]
+
+
+export const Role = {
+  ADMINISTRATEUR: 'ADMINISTRATEUR',
+  GESTIONNAIRE: 'GESTIONNAIRE',
+  CLIENT: 'CLIENT'
+} as const
+
+export type Role = (typeof Role)[keyof typeof Role]
