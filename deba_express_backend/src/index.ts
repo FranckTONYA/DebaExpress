@@ -6,7 +6,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-// Importation Prisma v7 + NodeNext stabilisée
+// Importations locales avec extensions .js obligatoires pour ESM/NodeNext
 import { PrismaClient } from './generated/client/client.js';
 import { verifierToken, autoriserRoles } from './middlewares/auth.js';
 import type { UserRequest } from './middlewares/auth.js';
@@ -18,53 +18,26 @@ if (!process.env.DATABASE_URL) {
 }
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
+// Configuration de la connexion brute et de l'adaptateur requis par Prisma 7
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-const PORT = process.env.PORT || 3000;
-
 app.use(cors());
 app.use(express.json());
 
-// Route test
+// 🔍 Route de diagnostic global
 app.get('/api/status', (req, res) => {
   res.json({ message: "Le serveur Deba Express fonctionne parfaitement sous Prisma 7 !" });
 });
 
-// 👤 ROUTE CORRIGÉE : Créer un client avec tous les champs requis par le schéma
-app.post('/api/clients', async (req, res) => {
-  try {
-    const { nom, prenom, email, telephone, adresse } = req.body;
+// =========================================================================
+// 🚪 SECTION AUTHENTIFICATION & COMPTES
+// =========================================================================
 
-    // Validation manuelle de sécurité
-    if (!nom || !prenom || !email || !telephone) {
-      return res.status(400).json({ error: "Les champs nom, prenom, email et telephone sont obligatoires." });
-    }
-
-    // Génération automatique d'un numéro de client unique Deba Express (Ex: CLI-171829381)
-    const numeroClient = `CLI-${Date.now()}`;
-
-    const nouveauClient = await prisma.client.create({
-      data: { 
-        numeroClient,
-        nom, 
-        prenom,
-        email, 
-        telephone, 
-        adresse 
-      }
-    });
-    
-    return res.status(201).json(nouveauClient);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Erreur lors de la création du client." });
-  }
-});
-
-// 🚪 ROUTE DE CONNEXION (Génère le Token JWT)
+// Route de connexion (Génération du Jeton JWT)
 app.post('/api/auth/connexion', async (req, res) => {
   const { email, motDePasse } = req.body;
 
@@ -87,103 +60,153 @@ app.post('/api/auth/connexion', async (req, res) => {
   }
 });
 
-// 👥 ROUTE ADMIN : Créer un nouvel utilisateur avec un rôle spécifique
-app.post(
-  '/api/utilisateurs', 
-  verifierToken, 
-  autoriserRoles(['ADMINISTRATEUR']), // Verrouillage strict : Administrateur uniquement
-  async (req: UserRequest, res) => {
-    try {
-      const { email, motDePasse, role } = req.body;
-
-      // 1. Validation des champs
-      if (!email || !motDePasse || !role) {
-        return res.status(400).json({ error: "Tous les champs (email, motDePasse, role) sont obligatoires." });
-      }
-
-      // 2. Vérification de la validité du rôle envoyé
-      if (!['ADMINISTRATEUR', 'GESTIONNAIRE', 'CLIENT'].includes(role)) {
-        return res.status(400).json({ error: "Le rôle spécifié est invalide." });
-      }
-
-      // 3. Vérification si l'email existe déjà en base
-      const utilisateurExistant = await prisma.utilisateur.findUnique({ where: { email } });
-      if (utilisateurExistant) {
-        return res.status(400).json({ error: "Un utilisateur avec cet email existe déjà." });
-      }
-
-      // 4. Hachage du mot de passe pour la sécurité
-      const sel = await bcrypt.genSalt(10);
-      const motDePasseHache = await bcrypt.hash(motDePasse, sel);
-
-      // 5. Création de l'utilisateur dans PostgreSQL sur Alwaysdata
-      const nouvelUtilisateur = await prisma.utilisateur.create({
-        data: {
-          email,
-          motDePasse: motDePasseHache,
-          role: role // 'ADMINISTRATEUR' ou 'GESTIONNAIRE'
-        },
-        select: {
-          id: true,
-          email: true,
-          role: true,
-          createdAt: true
-        }
-      });
-
-      return res.status(201).json({
-        message: `L'utilisateur ${email} avec le rôle ${role} a été créé avec succès.`,
-        utilisateur: nouvelUtilisateur
-      });
-
-    } catch (error) {
-      console.error("Erreur création utilisateur:", error);
-      return res.status(500).json({ error: "Erreur serveur lors de la création de l'utilisateur." });
-    }
-  }
-);
-
-
-// 🔒 EXEMPLE DE ROUTE SÉCURISÉE (Seuls l'Admin et le Gestionnaire peuvent créer un colis)
-app.post('/api/colis', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req: UserRequest, res) => {
-  res.json({ message: "Colis créé avec succès par un utilisateur autorisé !" });
-});
-
-// 🛠️ ROUTE DE SECOURS : Créer un Administrateur propre directement depuis le code
-app.get('/api/auth/initialiser-admin', async (req, res) => {
+// Route d'inscription d'un nouvel agent (Admin uniquement)
+app.post('/api/utilisateurs', verifierToken, autoriserRoles(['ADMINISTRATEUR']), async (req: UserRequest, res) => {
   try {
-    const emailAdmin = 'admin@debaexpress.com';
-    
-    // 1. Supprimer l'ancien compte s'il existe pour éviter les conflits de doublons
-    await prisma.utilisateur.deleteMany({
-      where: { email: emailAdmin }
-    });
+    const { email, motDePasse, role, nom, prenom, telephone, adresse } = req.body;
 
-    // 2. Générer un hachage Bcrypt natif et certifié par votre propre serveur
+    if (!email || !motDePasse || !role || !nom || !prenom || !telephone) {
+      return res.status(400).json({ error: "Tous les champs obligatoires doivent être renseignés." });
+    }
+
+    const utilisateurExistant = await prisma.utilisateur.findUnique({ where: { email } });
+    if (utilisateurExistant) return res.status(400).json({ error: "Cet email est déjà utilisé." });
+
     const sel = await bcrypt.genSalt(10);
-    const motDePasseHache = await bcrypt.hash('admin', sel);
+    const motDePasseHache = await bcrypt.hash(motDePasse, sel);
 
-    // 3. Insérer le compte propre dans Alwaysdata
-    const nouvelAdmin = await prisma.utilisateur.create({
+    const nouvelUtilisateur = await prisma.utilisateur.create({
       data: {
-        email: emailAdmin,
+        email,
         motDePasse: motDePasseHache,
-        role: 'ADMINISTRATEUR',
-        clientId: null // Aucun lien client requis
+        role,
+        nom,
+        prenom,
+        telephone,
+        adresse
       }
     });
 
-    return res.json({ 
-      success: true, 
-      message: "Le compte Administrateur a été réinitialisé et synchronisé avec succès sur Alwaysdata !" 
-    });
-
+    return res.status(201).json({ message: "Collaborateur créé avec succès.", utilisateur: nouvelUtilisateur });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Erreur lors de la réinitialisation de l'administrateur." });
+    return res.status(500).json({ error: "Erreur lors de la création de l'utilisateur." });
   }
 });
 
+// Récupérer tous les utilisateurs (Admin uniquement)
+app.get('/api/utilisateurs', verifierToken, autoriserRoles(['ADMINISTRATEUR']), async (req, res) => {
+  try {
+    const utilisateurs = await prisma.utilisateur.findMany({ orderBy: { createdAt: 'desc' } });
+    return res.json(utilisateurs);
+  } catch (error) {
+    return res.status(500).json({ error: "Impossible de récupérer les utilisateurs." });
+  }
+});
+
+// Modifier un utilisateur (Admin uniquement)
+app.put('/api/utilisateurs/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR']), async (req, res) => {
+  try {
+    const id = req.params.id as string; // Sécurisation du type pour exactOptionalPropertyTypes
+    const { email, role, nom, prenom, telephone, adresse, motDePasse } = req.body;
+
+    const data: any = { email, role, nom, prenom, telephone, adresse };
+
+    if (motDePasse && motDePasse.trim() !== '') {
+      const sel = await bcrypt.genSalt(10);
+      data.motDePasse = await bcrypt.hash(motDePasse, sel);
+    }
+
+    const modifie = await prisma.utilisateur.update({ where: { id }, data });
+    return res.json({ message: "Compte utilisateur mis à jour.", utilisateur: modifie });
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur lors de la modification de l'utilisateur." });
+  }
+});
+
+// Supprimer un utilisateur (Admin uniquement)
+app.delete('/api/utilisateurs/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR']), async (req, res) => {
+  try {
+    const id = req.params.id as string;
+    await prisma.utilisateur.delete({ where: { id } });
+    return res.json({ message: "Compte supprimé définitivement." });
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur lors de la suppression." });
+  }
+});
+
+// =========================================================================
+// 👤 SECTION GESTION DES CLIENTS
+// =========================================================================
+
+// Inscrire un client avec sa date de naissance requise
+app.post('/api/clients', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
+  try {
+    const { nom, prenom, email, telephone, adresse, dateNaissance } = req.body;
+
+    if (!nom || !prenom || !email || !telephone || !dateNaissance) {
+      return res.status(400).json({ error: "Tous les champs requis doivent être renseignés." });
+    }
+
+    const numeroClient = `CLI-${Date.now()}`;
+    const nouveauClient = await prisma.client.create({
+      data: { 
+        numeroClient,
+        nom, 
+        prenom,
+        email, 
+        telephone, 
+        adresse,
+        dateNaissance: new Date(dateNaissance)
+      }
+    });
+    
+    return res.status(201).json(nouveauClient);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Erreur lors de la création du client." });
+  }
+});
+
+// Récupérer la liste des clients
+app.get('/api/clients', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
+  try {
+    const clients = await prisma.client.findMany({
+      include: { colis: true },
+      orderBy: { createdAt: 'desc' }
+    });
+    return res.json(clients);
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur de chargement des fiches clients." });
+  }
+});
+
+// Modifier un client
+app.put('/api/clients/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
+  try {
+    const id = req.params.id as string;
+    const { nom, prenom, email, telephone, adresse } = req.body;
+
+    const misAJour = await prisma.client.update({
+      where: { id },
+      data: { nom, prenom, email, telephone, adresse }
+    });
+    return res.json({ message: "Fiche client actualisée.", client: misAJour });
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur lors de la mise à jour." });
+  }
+});
+
+// Supprimer un client
+app.delete('/api/clients/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
+  try {
+    const id = req.params.id as string;
+    await prisma.client.delete({ where: { id } });
+    return res.json({ message: "Fiche client retirée du système." });
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur lors de la suppression." });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`🚀 Serveur backend lancé sur http://localhost:${PORT}`);

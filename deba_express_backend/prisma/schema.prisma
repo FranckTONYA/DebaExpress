@@ -68,11 +68,10 @@ model Client {
   email           String   @unique
   telephone       String
   adresse         String
+  dateNaissance   DateTime
+  
   colis           Colis[]  @relation("ClientExpediteur")
-  
-  // CORRECTION : Ajout de la relation inverse vers Utilisateur
   utilisateur     Utilisateur?
-  
   createdAt       DateTime @default(now())
 }
 
@@ -123,8 +122,15 @@ model Utilisateur {
   email      String   @unique
   motDePasse String   // Hash bcrypt
   role       Role     @default(CLIENT)
+  
+  nom        String?  // Optionnel (non obligatoire)
+  prenom     String?  // Optionnel (non obligatoire)
+  telephone  String?  // Optionnel (non obligatoire)
+  adresse    String?  // Optionnel (non obligatoire)
+  
   createdAt  DateTime @default(now())
 
   clientId   String?  @unique
   client     Client?  @relation(fields: [clientId], references: [id], onDelete: Cascade)
 }
+

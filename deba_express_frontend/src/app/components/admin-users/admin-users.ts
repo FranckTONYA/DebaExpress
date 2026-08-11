@@ -1,30 +1,42 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-users',
   standalone: true,
-  imports: [FormsModule],
+  imports: [ReactiveFormsModule], // 💡 Utilisation exclusive des formulaires réactifs
   templateUrl: './admin-users.html',
   styleUrl: './admin-users.css'
 })
-export class AdminUsersComponent {
+export class AdminUsersComponent implements OnInit {
   private http = inject(HttpClient);
+  private fb = inject(FormBuilder);
 
-  // Signaux réactifs pour les champs du formulaire
-  email = signal<string>('');
-  motDePasse = signal<string>('');
-  roleChoisi = signal<string>('GESTIONNAIRE');
-
-  // Signaux d'état de l'interface
+  userForm!: FormGroup;
+  
+  // Signaux réactifs pour gérer les états de l'interface graphique
   erreurMessage = signal<string | null>(null);
   succesMessage = signal<string | null>(null);
   isLoading = signal<boolean>(false);
 
+  ngOnInit() {
+    // Configuration des contrôles et des règles de validation strictes
+    this.userForm = this.fb.group({
+      nom: ['', [Validators.required, Validators.minLength(2)]],
+      prenom: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      telephone: ['', [Validators.required, Validators.pattern('^[+]?[0-9]{8,15}$')]], // Format numérique international
+      adresse: [''], // Champ optionnel non obligatoire
+      motDePasse: ['', [Validators.required, Validators.minLength(6)]], // Sécurité minimale 6 caractères
+      role: ['GESTIONNAIRE', Validators.required]
+    });
+  }
+
   creerUtilisateur() {
-    if (!this.email() || !this.motDePasse()) {
-      this.erreurMessage.set('Veuillez remplir l’ensemble des champs.');
+    // Sécurité : on bloque l'exécution si le formulaire comporte des erreurs
+    if (this.userForm.invalid) {
+      this.erreurMessage.set('Veuillez corriger les erreurs de saisie avant de valider.');
       return;
     }
 
@@ -32,25 +44,18 @@ export class AdminUsersComponent {
     this.erreurMessage.set(null);
     this.succesMessage.set(null);
 
-    const payload = {
-      email: this.email(),
-      motDePasse: this.motDePasse(),
-      role: this.roleChoisi()
-    };
-
-    // Le token JWT sera injecté automatiquement par votre Intercepteur HTTP global !
-    this.http.post<any>('http://localhost:3000/api/utilisateurs', payload)
+    // L'intercepteur HTTP global injectera automatiquement le token JWT d'administration
+    this.http.post<any>('http://localhost:3000/api/utilisateurs', this.userForm.value)
       .subscribe({
         next: (res) => {
           this.isLoading.set(false);
           this.succesMessage.set(res.message);
-          // Réinitialisation du formulaire après succès
-          this.email.set('');
-          this.motDePasse.set('');
+          // Réinitialisation du formulaire avec le rôle par défaut
+          this.userForm.reset({ role: 'GESTIONNAIRE' });
         },
         error: (err) => {
           this.isLoading.set(false);
-          this.erreurMessage.set(err.error?.error || 'Une erreur est survenue lors de l’enregistrement.');
+          this.erreurMessage.set(err.error?.error || 'Une erreur est survenue lors de la création du compte.');
         }
       });
   }

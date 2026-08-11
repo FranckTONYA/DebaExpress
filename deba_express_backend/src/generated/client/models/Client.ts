@@ -32,6 +32,7 @@ export type ClientMinAggregateOutputType = {
   email: string | null
   telephone: string | null
   adresse: string | null
+  dateNaissance: Date | null
   createdAt: Date | null
 }
 
@@ -43,6 +44,7 @@ export type ClientMaxAggregateOutputType = {
   email: string | null
   telephone: string | null
   adresse: string | null
+  dateNaissance: Date | null
   createdAt: Date | null
 }
 
@@ -54,6 +56,7 @@ export type ClientCountAggregateOutputType = {
   email: number
   telephone: number
   adresse: number
+  dateNaissance: number
   createdAt: number
   _all: number
 }
@@ -67,6 +70,7 @@ export type ClientMinAggregateInputType = {
   email?: true
   telephone?: true
   adresse?: true
+  dateNaissance?: true
   createdAt?: true
 }
 
@@ -78,6 +82,7 @@ export type ClientMaxAggregateInputType = {
   email?: true
   telephone?: true
   adresse?: true
+  dateNaissance?: true
   createdAt?: true
 }
 
@@ -89,6 +94,7 @@ export type ClientCountAggregateInputType = {
   email?: true
   telephone?: true
   adresse?: true
+  dateNaissance?: true
   createdAt?: true
   _all?: true
 }
@@ -173,6 +179,7 @@ export type ClientGroupByOutputType = {
   email: string
   telephone: string
   adresse: string
+  dateNaissance: Date
   createdAt: Date
   _count: ClientCountAggregateOutputType | null
   _min: ClientMinAggregateOutputType | null
@@ -205,6 +212,7 @@ export type ClientWhereInput = {
   email?: Prisma.StringFilter<"Client"> | string
   telephone?: Prisma.StringFilter<"Client"> | string
   adresse?: Prisma.StringFilter<"Client"> | string
+  dateNaissance?: Prisma.DateTimeFilter<"Client"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   colis?: Prisma.ColisListRelationFilter
   utilisateur?: Prisma.XOR<Prisma.UtilisateurNullableScalarRelationFilter, Prisma.UtilisateurWhereInput> | null
@@ -218,6 +226,7 @@ export type ClientOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
   adresse?: Prisma.SortOrder
+  dateNaissance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   colis?: Prisma.ColisOrderByRelationAggregateInput
   utilisateur?: Prisma.UtilisateurOrderByWithRelationInput
@@ -234,6 +243,7 @@ export type ClientWhereUniqueInput = Prisma.AtLeast<{
   prenom?: Prisma.StringFilter<"Client"> | string
   telephone?: Prisma.StringFilter<"Client"> | string
   adresse?: Prisma.StringFilter<"Client"> | string
+  dateNaissance?: Prisma.DateTimeFilter<"Client"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   colis?: Prisma.ColisListRelationFilter
   utilisateur?: Prisma.XOR<Prisma.UtilisateurNullableScalarRelationFilter, Prisma.UtilisateurWhereInput> | null
@@ -247,6 +257,7 @@ export type ClientOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
   adresse?: Prisma.SortOrder
+  dateNaissance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ClientCountOrderByAggregateInput
   _max?: Prisma.ClientMaxOrderByAggregateInput
@@ -264,6 +275,7 @@ export type ClientScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"Client"> | string
   telephone?: Prisma.StringWithAggregatesFilter<"Client"> | string
   adresse?: Prisma.StringWithAggregatesFilter<"Client"> | string
+  dateNaissance?: Prisma.DateTimeWithAggregatesFilter<"Client"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Client"> | Date | string
 }
 
@@ -275,6 +287,7 @@ export type ClientCreateInput = {
   email: string
   telephone: string
   adresse: string
+  dateNaissance: Date | string
   createdAt?: Date | string
   colis?: Prisma.ColisCreateNestedManyWithoutExpediteurInput
   utilisateur?: Prisma.UtilisateurCreateNestedOneWithoutClientInput
@@ -288,6 +301,7 @@ export type ClientUncheckedCreateInput = {
   email: string
   telephone: string
   adresse: string
+  dateNaissance: Date | string
   createdAt?: Date | string
   colis?: Prisma.ColisUncheckedCreateNestedManyWithoutExpediteurInput
   utilisateur?: Prisma.UtilisateurUncheckedCreateNestedOneWithoutClientInput
@@ -301,6 +315,7 @@ export type ClientUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.StringFieldUpdateOperationsInput | string
+  dateNaissance?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   colis?: Prisma.ColisUpdateManyWithoutExpediteurNestedInput
   utilisateur?: Prisma.UtilisateurUpdateOneWithoutClientNestedInput
@@ -314,6 +329,7 @@ export type ClientUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.StringFieldUpdateOperationsInput | string
+  dateNaissance?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   colis?: Prisma.ColisUncheckedUpdateManyWithoutExpediteurNestedInput
   utilisateur?: Prisma.UtilisateurUncheckedUpdateOneWithoutClientNestedInput
@@ -327,6 +343,7 @@ export type ClientCreateManyInput = {
   email: string
   telephone: string
   adresse: string
+  dateNaissance: Date | string
   createdAt?: Date | string
 }
 
@@ -338,6 +355,7 @@ export type ClientUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.StringFieldUpdateOperationsInput | string
+  dateNaissance?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -349,6 +367,7 @@ export type ClientUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.StringFieldUpdateOperationsInput | string
+  dateNaissance?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -360,6 +379,7 @@ export type ClientCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
   adresse?: Prisma.SortOrder
+  dateNaissance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -371,6 +391,7 @@ export type ClientMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
   adresse?: Prisma.SortOrder
+  dateNaissance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -382,6 +403,7 @@ export type ClientMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
   adresse?: Prisma.SortOrder
+  dateNaissance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -433,6 +455,7 @@ export type ClientCreateWithoutColisInput = {
   email: string
   telephone: string
   adresse: string
+  dateNaissance: Date | string
   createdAt?: Date | string
   utilisateur?: Prisma.UtilisateurCreateNestedOneWithoutClientInput
 }
@@ -445,6 +468,7 @@ export type ClientUncheckedCreateWithoutColisInput = {
   email: string
   telephone: string
   adresse: string
+  dateNaissance: Date | string
   createdAt?: Date | string
   utilisateur?: Prisma.UtilisateurUncheckedCreateNestedOneWithoutClientInput
 }
@@ -473,6 +497,7 @@ export type ClientUpdateWithoutColisInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.StringFieldUpdateOperationsInput | string
+  dateNaissance?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   utilisateur?: Prisma.UtilisateurUpdateOneWithoutClientNestedInput
 }
@@ -485,6 +510,7 @@ export type ClientUncheckedUpdateWithoutColisInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.StringFieldUpdateOperationsInput | string
+  dateNaissance?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   utilisateur?: Prisma.UtilisateurUncheckedUpdateOneWithoutClientNestedInput
 }
@@ -497,6 +523,7 @@ export type ClientCreateWithoutUtilisateurInput = {
   email: string
   telephone: string
   adresse: string
+  dateNaissance: Date | string
   createdAt?: Date | string
   colis?: Prisma.ColisCreateNestedManyWithoutExpediteurInput
 }
@@ -509,6 +536,7 @@ export type ClientUncheckedCreateWithoutUtilisateurInput = {
   email: string
   telephone: string
   adresse: string
+  dateNaissance: Date | string
   createdAt?: Date | string
   colis?: Prisma.ColisUncheckedCreateNestedManyWithoutExpediteurInput
 }
@@ -537,6 +565,7 @@ export type ClientUpdateWithoutUtilisateurInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.StringFieldUpdateOperationsInput | string
+  dateNaissance?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   colis?: Prisma.ColisUpdateManyWithoutExpediteurNestedInput
 }
@@ -549,6 +578,7 @@ export type ClientUncheckedUpdateWithoutUtilisateurInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.StringFieldUpdateOperationsInput | string
+  dateNaissance?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   colis?: Prisma.ColisUncheckedUpdateManyWithoutExpediteurNestedInput
 }
@@ -592,6 +622,7 @@ export type ClientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   email?: boolean
   telephone?: boolean
   adresse?: boolean
+  dateNaissance?: boolean
   createdAt?: boolean
   colis?: boolean | Prisma.Client$colisArgs<ExtArgs>
   utilisateur?: boolean | Prisma.Client$utilisateurArgs<ExtArgs>
@@ -606,6 +637,7 @@ export type ClientSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   email?: boolean
   telephone?: boolean
   adresse?: boolean
+  dateNaissance?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["client"]>
 
@@ -617,6 +649,7 @@ export type ClientSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   email?: boolean
   telephone?: boolean
   adresse?: boolean
+  dateNaissance?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["client"]>
 
@@ -628,10 +661,11 @@ export type ClientSelectScalar = {
   email?: boolean
   telephone?: boolean
   adresse?: boolean
+  dateNaissance?: boolean
   createdAt?: boolean
 }
 
-export type ClientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "numeroClient" | "nom" | "prenom" | "email" | "telephone" | "adresse" | "createdAt", ExtArgs["result"]["client"]>
+export type ClientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "numeroClient" | "nom" | "prenom" | "email" | "telephone" | "adresse" | "dateNaissance" | "createdAt", ExtArgs["result"]["client"]>
 export type ClientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   colis?: boolean | Prisma.Client$colisArgs<ExtArgs>
   utilisateur?: boolean | Prisma.Client$utilisateurArgs<ExtArgs>
@@ -654,6 +688,7 @@ export type $ClientPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     email: string
     telephone: string
     adresse: string
+    dateNaissance: Date
     createdAt: Date
   }, ExtArgs["result"]["client"]>
   composites: {}
@@ -1087,6 +1122,7 @@ export interface ClientFieldRefs {
   readonly email: Prisma.FieldRef<"Client", 'String'>
   readonly telephone: Prisma.FieldRef<"Client", 'String'>
   readonly adresse: Prisma.FieldRef<"Client", 'String'>
+  readonly dateNaissance: Prisma.FieldRef<"Client", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Client", 'DateTime'>
 }
     

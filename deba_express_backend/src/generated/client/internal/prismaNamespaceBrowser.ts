@@ -107,6 +107,7 @@ export const ClientScalarFieldEnum = {
   email: 'email',
   telephone: 'telephone',
   adresse: 'adresse',
+  dateNaissance: 'dateNaissance',
   createdAt: 'createdAt'
 } as const
 
@@ -154,6 +155,10 @@ export const UtilisateurScalarFieldEnum = {
   email: 'email',
   motDePasse: 'motDePasse',
   role: 'role',
+  nom: 'nom',
+  prenom: 'prenom',
+  telephone: 'telephone',
+  adresse: 'adresse',
   createdAt: 'createdAt',
   clientId: 'clientId'
 } as const

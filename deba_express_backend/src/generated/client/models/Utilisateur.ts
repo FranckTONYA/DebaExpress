@@ -29,6 +29,10 @@ export type UtilisateurMinAggregateOutputType = {
   email: string | null
   motDePasse: string | null
   role: $Enums.Role | null
+  nom: string | null
+  prenom: string | null
+  telephone: string | null
+  adresse: string | null
   createdAt: Date | null
   clientId: string | null
 }
@@ -38,6 +42,10 @@ export type UtilisateurMaxAggregateOutputType = {
   email: string | null
   motDePasse: string | null
   role: $Enums.Role | null
+  nom: string | null
+  prenom: string | null
+  telephone: string | null
+  adresse: string | null
   createdAt: Date | null
   clientId: string | null
 }
@@ -47,6 +55,10 @@ export type UtilisateurCountAggregateOutputType = {
   email: number
   motDePasse: number
   role: number
+  nom: number
+  prenom: number
+  telephone: number
+  adresse: number
   createdAt: number
   clientId: number
   _all: number
@@ -58,6 +70,10 @@ export type UtilisateurMinAggregateInputType = {
   email?: true
   motDePasse?: true
   role?: true
+  nom?: true
+  prenom?: true
+  telephone?: true
+  adresse?: true
   createdAt?: true
   clientId?: true
 }
@@ -67,6 +83,10 @@ export type UtilisateurMaxAggregateInputType = {
   email?: true
   motDePasse?: true
   role?: true
+  nom?: true
+  prenom?: true
+  telephone?: true
+  adresse?: true
   createdAt?: true
   clientId?: true
 }
@@ -76,6 +96,10 @@ export type UtilisateurCountAggregateInputType = {
   email?: true
   motDePasse?: true
   role?: true
+  nom?: true
+  prenom?: true
+  telephone?: true
+  adresse?: true
   createdAt?: true
   clientId?: true
   _all?: true
@@ -158,6 +182,10 @@ export type UtilisateurGroupByOutputType = {
   email: string
   motDePasse: string
   role: $Enums.Role
+  nom: string | null
+  prenom: string | null
+  telephone: string | null
+  adresse: string | null
   createdAt: Date
   clientId: string | null
   _count: UtilisateurCountAggregateOutputType | null
@@ -188,6 +216,10 @@ export type UtilisateurWhereInput = {
   email?: Prisma.StringFilter<"Utilisateur"> | string
   motDePasse?: Prisma.StringFilter<"Utilisateur"> | string
   role?: Prisma.EnumRoleFilter<"Utilisateur"> | $Enums.Role
+  nom?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
+  prenom?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
+  telephone?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
+  adresse?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Utilisateur"> | Date | string
   clientId?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
   client?: Prisma.XOR<Prisma.ClientNullableScalarRelationFilter, Prisma.ClientWhereInput> | null
@@ -198,6 +230,10 @@ export type UtilisateurOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   motDePasse?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  nom?: Prisma.SortOrderInput | Prisma.SortOrder
+  prenom?: Prisma.SortOrderInput | Prisma.SortOrder
+  telephone?: Prisma.SortOrderInput | Prisma.SortOrder
+  adresse?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   clientId?: Prisma.SortOrderInput | Prisma.SortOrder
   client?: Prisma.ClientOrderByWithRelationInput
@@ -212,6 +248,10 @@ export type UtilisateurWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UtilisateurWhereInput | Prisma.UtilisateurWhereInput[]
   motDePasse?: Prisma.StringFilter<"Utilisateur"> | string
   role?: Prisma.EnumRoleFilter<"Utilisateur"> | $Enums.Role
+  nom?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
+  prenom?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
+  telephone?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
+  adresse?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Utilisateur"> | Date | string
   client?: Prisma.XOR<Prisma.ClientNullableScalarRelationFilter, Prisma.ClientWhereInput> | null
 }, "id" | "email" | "clientId">
@@ -221,6 +261,10 @@ export type UtilisateurOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   motDePasse?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  nom?: Prisma.SortOrderInput | Prisma.SortOrder
+  prenom?: Prisma.SortOrderInput | Prisma.SortOrder
+  telephone?: Prisma.SortOrderInput | Prisma.SortOrder
+  adresse?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   clientId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UtilisateurCountOrderByAggregateInput
@@ -236,6 +280,10 @@ export type UtilisateurScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"Utilisateur"> | string
   motDePasse?: Prisma.StringWithAggregatesFilter<"Utilisateur"> | string
   role?: Prisma.EnumRoleWithAggregatesFilter<"Utilisateur"> | $Enums.Role
+  nom?: Prisma.StringNullableWithAggregatesFilter<"Utilisateur"> | string | null
+  prenom?: Prisma.StringNullableWithAggregatesFilter<"Utilisateur"> | string | null
+  telephone?: Prisma.StringNullableWithAggregatesFilter<"Utilisateur"> | string | null
+  adresse?: Prisma.StringNullableWithAggregatesFilter<"Utilisateur"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Utilisateur"> | Date | string
   clientId?: Prisma.StringNullableWithAggregatesFilter<"Utilisateur"> | string | null
 }
@@ -245,6 +293,10 @@ export type UtilisateurCreateInput = {
   email: string
   motDePasse: string
   role?: $Enums.Role
+  nom?: string | null
+  prenom?: string | null
+  telephone?: string | null
+  adresse?: string | null
   createdAt?: Date | string
   client?: Prisma.ClientCreateNestedOneWithoutUtilisateurInput
 }
@@ -254,6 +306,10 @@ export type UtilisateurUncheckedCreateInput = {
   email: string
   motDePasse: string
   role?: $Enums.Role
+  nom?: string | null
+  prenom?: string | null
+  telephone?: string | null
+  adresse?: string | null
   createdAt?: Date | string
   clientId?: string | null
 }
@@ -263,6 +319,10 @@ export type UtilisateurUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   motDePasse?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  nom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  prenom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adresse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   client?: Prisma.ClientUpdateOneWithoutUtilisateurNestedInput
 }
@@ -272,6 +332,10 @@ export type UtilisateurUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   motDePasse?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  nom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  prenom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adresse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -281,6 +345,10 @@ export type UtilisateurCreateManyInput = {
   email: string
   motDePasse: string
   role?: $Enums.Role
+  nom?: string | null
+  prenom?: string | null
+  telephone?: string | null
+  adresse?: string | null
   createdAt?: Date | string
   clientId?: string | null
 }
@@ -290,6 +358,10 @@ export type UtilisateurUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   motDePasse?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  nom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  prenom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adresse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -298,6 +370,10 @@ export type UtilisateurUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   motDePasse?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  nom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  prenom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adresse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
@@ -312,6 +388,10 @@ export type UtilisateurCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   motDePasse?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  nom?: Prisma.SortOrder
+  prenom?: Prisma.SortOrder
+  telephone?: Prisma.SortOrder
+  adresse?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
 }
@@ -321,6 +401,10 @@ export type UtilisateurMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   motDePasse?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  nom?: Prisma.SortOrder
+  prenom?: Prisma.SortOrder
+  telephone?: Prisma.SortOrder
+  adresse?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
 }
@@ -330,6 +414,10 @@ export type UtilisateurMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   motDePasse?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  nom?: Prisma.SortOrder
+  prenom?: Prisma.SortOrder
+  telephone?: Prisma.SortOrder
+  adresse?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
 }
@@ -375,6 +463,10 @@ export type UtilisateurCreateWithoutClientInput = {
   email: string
   motDePasse: string
   role?: $Enums.Role
+  nom?: string | null
+  prenom?: string | null
+  telephone?: string | null
+  adresse?: string | null
   createdAt?: Date | string
 }
 
@@ -383,6 +475,10 @@ export type UtilisateurUncheckedCreateWithoutClientInput = {
   email: string
   motDePasse: string
   role?: $Enums.Role
+  nom?: string | null
+  prenom?: string | null
+  telephone?: string | null
+  adresse?: string | null
   createdAt?: Date | string
 }
 
@@ -407,6 +503,10 @@ export type UtilisateurUpdateWithoutClientInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   motDePasse?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  nom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  prenom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adresse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -415,6 +515,10 @@ export type UtilisateurUncheckedUpdateWithoutClientInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   motDePasse?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  nom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  prenom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adresse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -425,6 +529,10 @@ export type UtilisateurSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   email?: boolean
   motDePasse?: boolean
   role?: boolean
+  nom?: boolean
+  prenom?: boolean
+  telephone?: boolean
+  adresse?: boolean
   createdAt?: boolean
   clientId?: boolean
   client?: boolean | Prisma.Utilisateur$clientArgs<ExtArgs>
@@ -435,6 +543,10 @@ export type UtilisateurSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   email?: boolean
   motDePasse?: boolean
   role?: boolean
+  nom?: boolean
+  prenom?: boolean
+  telephone?: boolean
+  adresse?: boolean
   createdAt?: boolean
   clientId?: boolean
   client?: boolean | Prisma.Utilisateur$clientArgs<ExtArgs>
@@ -445,6 +557,10 @@ export type UtilisateurSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   email?: boolean
   motDePasse?: boolean
   role?: boolean
+  nom?: boolean
+  prenom?: boolean
+  telephone?: boolean
+  adresse?: boolean
   createdAt?: boolean
   clientId?: boolean
   client?: boolean | Prisma.Utilisateur$clientArgs<ExtArgs>
@@ -455,11 +571,15 @@ export type UtilisateurSelectScalar = {
   email?: boolean
   motDePasse?: boolean
   role?: boolean
+  nom?: boolean
+  prenom?: boolean
+  telephone?: boolean
+  adresse?: boolean
   createdAt?: boolean
   clientId?: boolean
 }
 
-export type UtilisateurOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "motDePasse" | "role" | "createdAt" | "clientId", ExtArgs["result"]["utilisateur"]>
+export type UtilisateurOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "motDePasse" | "role" | "nom" | "prenom" | "telephone" | "adresse" | "createdAt" | "clientId", ExtArgs["result"]["utilisateur"]>
 export type UtilisateurInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   client?: boolean | Prisma.Utilisateur$clientArgs<ExtArgs>
 }
@@ -480,6 +600,10 @@ export type $UtilisateurPayload<ExtArgs extends runtime.Types.Extensions.Interna
     email: string
     motDePasse: string
     role: $Enums.Role
+    nom: string | null
+    prenom: string | null
+    telephone: string | null
+    adresse: string | null
     createdAt: Date
     clientId: string | null
   }, ExtArgs["result"]["utilisateur"]>
@@ -910,6 +1034,10 @@ export interface UtilisateurFieldRefs {
   readonly email: Prisma.FieldRef<"Utilisateur", 'String'>
   readonly motDePasse: Prisma.FieldRef<"Utilisateur", 'String'>
   readonly role: Prisma.FieldRef<"Utilisateur", 'Role'>
+  readonly nom: Prisma.FieldRef<"Utilisateur", 'String'>
+  readonly prenom: Prisma.FieldRef<"Utilisateur", 'String'>
+  readonly telephone: Prisma.FieldRef<"Utilisateur", 'String'>
+  readonly adresse: Prisma.FieldRef<"Utilisateur", 'String'>
   readonly createdAt: Prisma.FieldRef<"Utilisateur", 'DateTime'>
   readonly clientId: Prisma.FieldRef<"Utilisateur", 'String'>
 }

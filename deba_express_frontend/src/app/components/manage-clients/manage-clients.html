@@ -1,0 +1,93 @@
+<div class="space-y-6">
+  <header>
+    <h2 class="text-2xl font-extrabold text-deba-dark">Répertoire Général des Clients</h2>
+    <p class="text-sm text-slate-500">Consultez, éditez ou révoquez les fiches logistiques des expéditeurs.</p>
+  </header>
+
+  <!-- Tableau principal -->
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50 border-b text-xs font-bold uppercase tracking-wider text-slate-500">
+            <th class="p-4">Numéro</th>
+            <th class="p-4">Identité</th>
+            <th class="p-4">Téléphone</th>
+            <th class="p-4">Né(e) le</th>
+            <th class="p-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 text-sm">
+          @for (client of clients(); track client.id) {
+            <tr class="hover:bg-slate-50/80 transition-all">
+              <td class="p-4 font-mono font-bold text-deba-steel">{{ client.numeroClient }}</td>
+              <td class="p-4 font-semibold">{{ client.prenom }} {{ client.nom }}</td>
+              <td class="p-4 text-slate-600">{{ client.telephone }}</td>
+              <td class="p-4 text-slate-500">{{ client.dateNaissance | date:'dd/MM/yyyy' }}</td>
+              <td class="p-4 text-right space-x-2">
+                <button (click)="ouvrirModal(client, false)" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-medium cursor-pointer">👁️ Voir</button>
+                <button (click)="ouvrirModal(client, true)" class="text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg font-medium cursor-pointer">✏️ Modifier</button>
+                <button (click)="supprimerClient(client.id)" class="text-xs bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg font-medium cursor-pointer">🗑️ Supprimer</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MODALE DETAILED / EDIT VIEW -->
+  @if (clientSelectionne()) {
+    <div class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
+      <div class="bg-white rounded-3xl p-6 w-full max-w-lg shadow-xl border border-slate-100 space-y-4">
+        <div class="flex justify-between items-center border-b pb-3">
+          <h3 class="text-lg font-bold text-deba-dark">
+            {{ isEditMode() ? '✏️ Modifier les Informations' : '👁️ Fiche Client Détail' }}
+          </h3>
+          <button (click)="fermerModal()" class="text-slate-400 text-xl hover:text-slate-600 cursor-pointer">✕</button>
+        </div>
+
+        @if (succesMessage()) { <div class="p-3 bg-green-50 text-green-700 text-sm font-medium rounded-xl">✅ {{ succesMessage() }}</div> }
+        @if (erreurMessage()) { <div class="p-3 bg-red-50 text-red-700 text-sm font-medium rounded-xl">⚠️ {{ erreurMessage() }}</div> }
+
+        <form [formGroup]="clientForm" (ngSubmit)="sauvegarderClient()" class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Prénom</label>
+              <input type="text" formControlName="prenom" class="w-full bg-slate-50 border p-3 text-sm rounded-xl focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Nom</label>
+              <input type="text" formControlName="nom" class="w-full bg-slate-50 border p-3 text-sm rounded-xl focus:outline-none">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Téléphone</label>
+              <input type="text" formControlName="telephone" class="w-full bg-slate-50 border p-3 text-sm rounded-xl focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Date de naissance</label>
+              <input type="date" formControlName="dateNaissance" class="w-full bg-slate-50 border p-3 text-sm rounded-xl focus:outline-none">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Email</label>
+            <input type="email" formControlName="email" class="w-full bg-slate-50 border p-3 text-sm rounded-xl focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Adresse complète</label>
+            <input type="text" formControlName="adresse" class="w-full bg-slate-50 border p-3 text-sm rounded-xl focus:outline-none">
+          </div>
+
+          <div class="flex justify-end gap-3 pt-3 border-t">
+            <button type="button" (click)="fermerModal()" class="px-4 py-2.5 text-sm bg-slate-100 text-slate-600 rounded-xl font-medium cursor-pointer">Fermer</button>
+            @if (isEditMode()) {
+              <button type="submit" [disabled]="clientForm.invalid" class="px-5 py-2.5 text-sm bg-deba-dark text-white rounded-xl font-bold cursor-pointer disabled:opacity-40 shadow-md">💾 Enregistrer</button>
+            }
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>
