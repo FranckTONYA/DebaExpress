@@ -937,8 +937,7 @@ export const ColisScalarFieldEnum = {
   description: 'description',
   prixUnitaireApp: 'prixUnitaireApp',
   mesureApp: 'mesureApp',
-  poids: 'poids',
-  nombrePiece: 'nombrePiece',
+  quantite: 'quantite',
   prixTotal: 'prixTotal',
   dateDepot: 'dateDepot',
   dateEnvoi: 'dateEnvoi',
@@ -1070,20 +1069,6 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-/**
  * Reference to a field of type 'StatutEnvoi'
  */
 export type EnumStatutEnvoiFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StatutEnvoi'>
@@ -1115,6 +1100,20 @@ export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'Role[]'
  */
 export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 /**

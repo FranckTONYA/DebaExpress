@@ -1,0 +1,83 @@
+<div class="max-w-4xl mx-auto space-y-6">
+  <header>
+    <h2 class="text-2xl font-extrabold text-deba-dark">Mon Profil Personnel</h2>
+    <p class="text-sm text-slate-500">Gérez vos informations de contact et mettez à jour la sécurité de votre compte d'accès.</p>
+  </header>
+
+  <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-100">
+    <!-- Messages d'état -->
+    @if (erreurMessage()) { <div class="mb-5 p-4 bg-red-50 border-l-4 border-red-500 rounded-xl text-red-700 text-sm font-medium">⚠️ {{ erreurMessage() }}</div> }
+    @if (succesMessage()) { <div class="mb-5 p-4 bg-green-50 border-l-4 border-green-500 rounded-xl text-green-700 text-sm font-medium">`✅ {{ succesMessage() }}</div> }
+
+    <form [formGroup]="profileForm" (ngSubmit)="sauvegarderProfil()" class="space-y-6">
+      
+      <h3 class="text-sm font-bold text-deba-steel uppercase tracking-widest border-b pb-2">📋 Informations d'Identité</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Prénom</label>
+          <input formControlName="prenom" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm focus:outline-none text-deba-dark">
+          @if (profileForm.get('prenom')?.invalid && profileForm.get('prenom')?.touched) { <p class="text-xs text-red-500 font-medium mt-1">Le prénom doit faire 2 caractères minimum.</p> }
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Nom de famille</label>
+          <input formControlName="nom" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm focus:outline-none text-deba-dark">
+          @if (profileForm.get('nom')?.invalid && profileForm.get('nom')?.touched) { <p class="text-xs text-red-500 font-medium mt-1">Le nom doit faire 2 caractères minimum.</p> }
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Identifiant de connexion (Email)</label>
+          <input formControlName="email" type="email" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm focus:outline-none text-deba-dark">
+          @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) { <p class="text-xs text-red-500 font-medium mt-1">Saisissez une adresse email valide.</p> }
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Téléphone Professionnel</label>
+          <input formControlName="telephone" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm focus:outline-none text-deba-dark">
+          @if (profileForm.get('telephone')?.invalid && profileForm.get('telephone')?.touched) { <p class="text-xs text-red-500 font-medium mt-1">Format de téléphone invalide (8 à 15 chiffres).</p> }
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Adresse de résidence</label>
+        <input formControlName="adresse" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm focus:outline-none text-deba-dark">
+      </div>
+
+      <h3 class="text-sm font-bold text-deba-steel uppercase tracking-widest border-b pb-2 pt-4">🔒 Sécurité du Compte (Changement de mot de passe)</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <!-- Nouveau Mot de passe -->
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Nouveau mot de passe (laisser vide si inchangé)</label>
+          <div class="relative">
+            <input [type]="masquerMdp() ? 'password' : 'text'" formControlName="motDePasse" placeholder="Minimum 6 caractères" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 pr-12 text-sm focus:outline-none text-deba-dark">
+            <button type="button" (click)="masquerMdp.set(!masquerMdp())" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-deba-steel cursor-pointer">
+              {{ masquerMdp() ? '👁️' : '🙈' }}
+            </button>
+          </div>
+          @if (profileForm.get('motDePasse')?.invalid && profileForm.get('motDePasse')?.touched) { <p class="text-xs text-red-500 font-medium mt-1">Le mot de passe doit faire 6 caractères minimum.</p> }
+        </div>
+
+        <!-- Confirmer Mot de passe -->
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Confirmer le nouveau mot de passe</label>
+          <div class="relative">
+            <input [type]="masquerConfMdp() ? 'password' : 'text'" formControlName="confirmerMotDePasse" placeholder="Répéter le mot de passe" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 pr-12 text-sm focus:outline-none text-deba-dark">
+            <button type="button" (click)="masquerConfMdp.set(!masquerConfMdp())" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-deba-steel cursor-pointer">
+              {{ masquerConfMdp() ? '👁️' : '🙈' }}
+            </button>
+          </div>
+          @if (profileForm.get('confirmerMotDePasse')?.hasError('mdpNonIdentique') && profileForm.get('confirmerMotDePasse')?.touched) {
+            <p class="text-xs text-red-500 font-medium mt-1">⚠️ Les deux mots de passe ne correspondent pas.</p>
+          }
+        </div>
+      </div>
+
+      <div class="pt-4 border-t flex justify-end">
+        <button type="submit" [disabled]="profileForm.invalid || isLoading()" class="w-full sm:w-auto bg-deba-dark hover:bg-opacity-95 text-white font-bold px-8 py-4 rounded-xl shadow-md transition-all cursor-pointer disabled:opacity-40">
+          @if (isLoading()) { <span>Application des modifications...</span> } @else { <span>💾 Enregistrer mon profil</span> }
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

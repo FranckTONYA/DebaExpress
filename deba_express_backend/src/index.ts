@@ -208,6 +208,207 @@ app.delete('/api/clients/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR', 
   }
 });
 
+// =========================================================================
+// 👤 SECTION PROFILE PERSONNEL (POUR L'UTILISATEUR CONNECTÉ)
+// =========================================================================
+
+// 1. Récupérer les informations de l'utilisateur actuellement connecté
+app.get('/api/profil/moi', verifierToken, async (req: UserRequest, res) => {
+  try {
+    if (!req.user) return res.status(401).json({ error: "Non authentifié." });
+
+    const utilisateur = await prisma.utilisateur.findUnique({
+      where: { id: req.user.id },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        nom: true,
+        prenom: true,
+        telephone: true,
+        adresse: true,
+        createdAt: true
+      }
+    });
+
+    if (!utilisateur) return res.status(404).json({ error: "Utilisateur introuvable." });
+    return res.json(utilisateur);
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur lors de la récupération du profil." });
+  }
+});
+
+// 2. Mettre à jour ses propres informations et/ou son mot de passe
+app.put('/api/profil/moi', verifierToken, async (req: UserRequest, res) => {
+  try {
+    if (!req.user) return res.status(401).json({ error: "Non authentifié." });
+
+    const { nom, prenom, telephone, adresse, email, motDePasse } = req.body;
+
+    // Validation des champs obligatoires de base
+    if (!nom || !prenom || !email || !telephone) {
+      return res.status(400).json({ error: "Le nom, prénom, email et téléphone sont obligatoires." });
+    }
+
+    // Vérifier si le nouvel email n'est pas déjà pris par quelqu'un d'autre
+    const emailExistant = await prisma.utilisateur.findFirst({
+      where: {
+        email,
+        NOT: { id: req.user.id }
+      }
+    });
+    if (emailExistant) return res.status(400).json({ error: "Cette adresse email est déjà utilisée." });
+
+    const data: any = { nom, prenom, telephone, adresse, email };
+
+    // Si l'utilisateur demande à changer son mot de passe
+    if (motDePasse && motDePasse.trim() !== '') {
+      if (motDePasse.length < 6) {
+        return res.status(400).json({ error: "Le mot de passe doit contenir au moins 6 caractères." });
+      }
+      const sel = await bcrypt.genSalt(10);
+      data.motDePasse = await bcrypt.hash(motDePasse, sel);
+    }
+
+    const profilMisAJour = await prisma.utilisateur.update({
+      where: { id: req.user.id },
+      data,
+      select: { id: true, email: true, role: true, nom: true, prenom: true, telephone: true, adresse: true }
+    });
+
+    return res.json({ message: "Votre profil a été mis à jour avec succès !", utilisateur: profilMisAJour });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Erreur lors de la mise à jour du profil." });
+  }
+});
+
+// =========================================================================
+// 🗂️ SECTION TARIFICATION : CATÉGORIES & SOUS-CATÉGORIES
+// =========================================================================
+
+// 1. Lire toute la nomenclature tarifaire (Catégories + Sous-catégories)
+app.get('/api/categories', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
+  try {
+    const nomenclature = await prisma.categorieColis.findMany({
+      include: { sousCategories: true },
+      orderBy: { nom: 'asc' }
+    });
+    return res.json(nomenclature);
+  } catch (error) {
+    return res.status(500).json({ error: "Impossible de charger les catégories tarifaires." });
+  }
+});
+
+// 2. Créer une Catégorie Colis (Champs requis obligatoires)
+app.post('/api/categories', verifierToken, autoriserRoles(['ADMINISTRATEUR']), async (req, res) => {
+  try {
+    const { nom, description, prixUnitaire, mesure } = req.body;
+    if (!nom || prixUnitaire === undefined || !mesure) {
+      return res.status(400).json({ error: "Le nom, le prix unitaire de base et la mesure sont obligatoires." });
+    }
+
+    const categorie = await prisma.categorieColis.create({
+      data: {
+        nom,
+        description,
+        prixUnitaire: parseFloat(prixUnitaire),
+        mesure // 'POIDS' ou 'PIECE'
+      }
+    });
+    return res.status(201).json(categorie);
+  } catch (error) {
+    return res.status(400).json({ error: "Une catégorie portant ce nom existe déjà." });
+  }
+});
+
+// 3. Créer une Sous-Catégorie Colis (Valeurs prix/mesures optionnelles pour héritage)
+app.post('/api/sous-categories', verifierToken, autoriserRoles(['ADMINISTRATEUR']), async (req, res) => {
+  try {
+    const { nom, prixUnitaire, mesure, categorieId } = req.body;
+    if (!nom || !categorieId) {
+      return res.status(400).json({ error: "Le nom de la sous-catégorie et la catégorie parente sont obligatoires." });
+    }
+
+    const sousCategorie = await prisma.sousCategorieColis.create({
+      data: {
+        nom,
+        categorieId,
+        prixUnitaire: prixUnitaire ? parseFloat(prixUnitaire) : null,
+        mesure: mesure || null
+      }
+    });
+    return res.status(201).json(sousCategorie);
+  } catch (error) {
+    return res.status(400).json({ error: "Erreur : cette sous-catégorie existe déjà dans cette catégorie." });
+  }
+});
+
+// 4. Modifier une Catégorie Colis
+app.put('/api/categories/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR']), async (req, res) => {
+  try {
+    const id = req.params.id as string;
+    const { nom, description, prixUnitaire, mesure } = req.body;
+
+    const categorieModifiee = await prisma.categorieColis.update({
+      where: { id },
+      data: {
+        nom,
+        description,
+        prixUnitaire: parseFloat(prixUnitaire),
+        mesure
+      }
+    });
+    return res.json(categorieModifiee);
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur lors de la modification de la catégorie." });
+  }
+});
+
+// 5. Modifier une Sous-Catégorie Colis (Permet de surcharger ou de repasser à null pour réhériter)
+app.put('/api/sous-categories/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR']), async (req, res) => {
+  try {
+    const id = req.params.id as string;
+    const { nom, prixUnitaire, mesure } = req.body;
+
+    const sousCategorieModifiee = await prisma.sousCategorieColis.update({
+      where: { id },
+      data: {
+        nom,
+        prixUnitaire: prixUnitaire === '' || prixUnitaire === null ? null : parseFloat(prixUnitaire),
+        mesure: mesure === '' ? null : mesure
+      }
+    });
+    return res.json(sousCategorieModifiee);
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur lors de la modification de la sous-catégorie." });
+  }
+});
+
+// 6. Supprimer une Catégorie Colis (Cascade automatique vers les sous-catégories via Prisma)
+app.delete('/api/categories/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR']), async (req, res) => {
+  try {
+    const id = req.params.id as string;
+    await prisma.categorieColis.delete({ where: { id } });
+    return res.json({ message: "Catégorie et toutes ses sous-catégories supprimées avec succès." });
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur lors de la suppression." });
+  }
+});
+
+// 7. Supprimer uniquement une Sous-Catégorie Colis
+app.delete('/api/sous-categories/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR']), async (req, res) => {
+  try {
+    const id = req.params.id as string;
+    await prisma.sousCategorieColis.delete({ where: { id } });
+    return res.json({ message: "Sous-catégorie supprimée avec succès." });
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur lors de la suppression." });
+  }
+});
+
+
+
 app.listen(PORT, () => {
   console.log(`🚀 Serveur backend lancé sur http://localhost:${PORT}`);
 });

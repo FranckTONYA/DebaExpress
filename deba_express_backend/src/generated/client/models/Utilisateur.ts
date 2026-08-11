@@ -182,9 +182,9 @@ export type UtilisateurGroupByOutputType = {
   email: string
   motDePasse: string
   role: $Enums.Role
-  nom: string | null
-  prenom: string | null
-  telephone: string | null
+  nom: string
+  prenom: string
+  telephone: string
   adresse: string | null
   createdAt: Date
   clientId: string | null
@@ -216,9 +216,9 @@ export type UtilisateurWhereInput = {
   email?: Prisma.StringFilter<"Utilisateur"> | string
   motDePasse?: Prisma.StringFilter<"Utilisateur"> | string
   role?: Prisma.EnumRoleFilter<"Utilisateur"> | $Enums.Role
-  nom?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
-  prenom?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
-  telephone?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
+  nom?: Prisma.StringFilter<"Utilisateur"> | string
+  prenom?: Prisma.StringFilter<"Utilisateur"> | string
+  telephone?: Prisma.StringFilter<"Utilisateur"> | string
   adresse?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Utilisateur"> | Date | string
   clientId?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
@@ -230,9 +230,9 @@ export type UtilisateurOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   motDePasse?: Prisma.SortOrder
   role?: Prisma.SortOrder
-  nom?: Prisma.SortOrderInput | Prisma.SortOrder
-  prenom?: Prisma.SortOrderInput | Prisma.SortOrder
-  telephone?: Prisma.SortOrderInput | Prisma.SortOrder
+  nom?: Prisma.SortOrder
+  prenom?: Prisma.SortOrder
+  telephone?: Prisma.SortOrder
   adresse?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   clientId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -248,9 +248,9 @@ export type UtilisateurWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UtilisateurWhereInput | Prisma.UtilisateurWhereInput[]
   motDePasse?: Prisma.StringFilter<"Utilisateur"> | string
   role?: Prisma.EnumRoleFilter<"Utilisateur"> | $Enums.Role
-  nom?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
-  prenom?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
-  telephone?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
+  nom?: Prisma.StringFilter<"Utilisateur"> | string
+  prenom?: Prisma.StringFilter<"Utilisateur"> | string
+  telephone?: Prisma.StringFilter<"Utilisateur"> | string
   adresse?: Prisma.StringNullableFilter<"Utilisateur"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Utilisateur"> | Date | string
   client?: Prisma.XOR<Prisma.ClientNullableScalarRelationFilter, Prisma.ClientWhereInput> | null
@@ -261,9 +261,9 @@ export type UtilisateurOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   motDePasse?: Prisma.SortOrder
   role?: Prisma.SortOrder
-  nom?: Prisma.SortOrderInput | Prisma.SortOrder
-  prenom?: Prisma.SortOrderInput | Prisma.SortOrder
-  telephone?: Prisma.SortOrderInput | Prisma.SortOrder
+  nom?: Prisma.SortOrder
+  prenom?: Prisma.SortOrder
+  telephone?: Prisma.SortOrder
   adresse?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   clientId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -280,9 +280,9 @@ export type UtilisateurScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"Utilisateur"> | string
   motDePasse?: Prisma.StringWithAggregatesFilter<"Utilisateur"> | string
   role?: Prisma.EnumRoleWithAggregatesFilter<"Utilisateur"> | $Enums.Role
-  nom?: Prisma.StringNullableWithAggregatesFilter<"Utilisateur"> | string | null
-  prenom?: Prisma.StringNullableWithAggregatesFilter<"Utilisateur"> | string | null
-  telephone?: Prisma.StringNullableWithAggregatesFilter<"Utilisateur"> | string | null
+  nom?: Prisma.StringWithAggregatesFilter<"Utilisateur"> | string
+  prenom?: Prisma.StringWithAggregatesFilter<"Utilisateur"> | string
+  telephone?: Prisma.StringWithAggregatesFilter<"Utilisateur"> | string
   adresse?: Prisma.StringNullableWithAggregatesFilter<"Utilisateur"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Utilisateur"> | Date | string
   clientId?: Prisma.StringNullableWithAggregatesFilter<"Utilisateur"> | string | null
@@ -293,9 +293,9 @@ export type UtilisateurCreateInput = {
   email: string
   motDePasse: string
   role?: $Enums.Role
-  nom?: string | null
-  prenom?: string | null
-  telephone?: string | null
+  nom: string
+  prenom: string
+  telephone: string
   adresse?: string | null
   createdAt?: Date | string
   client?: Prisma.ClientCreateNestedOneWithoutUtilisateurInput
@@ -306,9 +306,9 @@ export type UtilisateurUncheckedCreateInput = {
   email: string
   motDePasse: string
   role?: $Enums.Role
-  nom?: string | null
-  prenom?: string | null
-  telephone?: string | null
+  nom: string
+  prenom: string
+  telephone: string
   adresse?: string | null
   createdAt?: Date | string
   clientId?: string | null
@@ -319,9 +319,9 @@ export type UtilisateurUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   motDePasse?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  nom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  prenom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  prenom?: Prisma.StringFieldUpdateOperationsInput | string
+  telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   client?: Prisma.ClientUpdateOneWithoutUtilisateurNestedInput
@@ -332,9 +332,9 @@ export type UtilisateurUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   motDePasse?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  nom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  prenom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  prenom?: Prisma.StringFieldUpdateOperationsInput | string
+  telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -345,9 +345,9 @@ export type UtilisateurCreateManyInput = {
   email: string
   motDePasse: string
   role?: $Enums.Role
-  nom?: string | null
-  prenom?: string | null
-  telephone?: string | null
+  nom: string
+  prenom: string
+  telephone: string
   adresse?: string | null
   createdAt?: Date | string
   clientId?: string | null
@@ -358,9 +358,9 @@ export type UtilisateurUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   motDePasse?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  nom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  prenom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  prenom?: Prisma.StringFieldUpdateOperationsInput | string
+  telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -370,9 +370,9 @@ export type UtilisateurUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   motDePasse?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  nom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  prenom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  prenom?: Prisma.StringFieldUpdateOperationsInput | string
+  telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -463,9 +463,9 @@ export type UtilisateurCreateWithoutClientInput = {
   email: string
   motDePasse: string
   role?: $Enums.Role
-  nom?: string | null
-  prenom?: string | null
-  telephone?: string | null
+  nom: string
+  prenom: string
+  telephone: string
   adresse?: string | null
   createdAt?: Date | string
 }
@@ -475,9 +475,9 @@ export type UtilisateurUncheckedCreateWithoutClientInput = {
   email: string
   motDePasse: string
   role?: $Enums.Role
-  nom?: string | null
-  prenom?: string | null
-  telephone?: string | null
+  nom: string
+  prenom: string
+  telephone: string
   adresse?: string | null
   createdAt?: Date | string
 }
@@ -503,9 +503,9 @@ export type UtilisateurUpdateWithoutClientInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   motDePasse?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  nom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  prenom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  prenom?: Prisma.StringFieldUpdateOperationsInput | string
+  telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -515,9 +515,9 @@ export type UtilisateurUncheckedUpdateWithoutClientInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   motDePasse?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  nom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  prenom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nom?: Prisma.StringFieldUpdateOperationsInput | string
+  prenom?: Prisma.StringFieldUpdateOperationsInput | string
+  telephone?: Prisma.StringFieldUpdateOperationsInput | string
   adresse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -600,9 +600,9 @@ export type $UtilisateurPayload<ExtArgs extends runtime.Types.Extensions.Interna
     email: string
     motDePasse: string
     role: $Enums.Role
-    nom: string | null
-    prenom: string | null
-    telephone: string | null
+    nom: string
+    prenom: string
+    telephone: string
     adresse: string | null
     createdAt: Date
     clientId: string | null

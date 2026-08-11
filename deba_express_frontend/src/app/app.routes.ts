@@ -6,6 +6,8 @@ import { DashboardComponent } from './components/dashboard/dashboard';
 import { AdminUsersComponent } from './components/admin-users/admin-users';
 import { ManageClientsComponent } from './components/manage-clients/manage-clients';
 import { ManageUsersComponent } from './components/manage-users/manage-users';
+import { ProfileComponent } from './components/profile/profile';
+import { ManageRatesComponent } from './components/manage-rates/manage-rates.js';
 // import { TrackingComponent } from './components/tracking/tracking';
 
 export const routes: Routes = [
@@ -18,6 +20,7 @@ export const routes: Routes = [
     component: LayoutComponent,
     canActivate: [authGuard(['ADMINISTRATEUR', 'GESTIONNAIRE', 'CLIENT'])], // Vérification globale de connexion
     children: [
+      
       // 📊 Dashboard : Réservé aux équipes logistiques
       { 
         path: 'dashboard', 
@@ -44,6 +47,20 @@ export const routes: Routes = [
         path: 'admin/gestion-utilisateurs', 
         component: ManageUsersComponent,
         canActivate: [authGuard(['ADMINISTRATEUR'])] // 💡 Sécurisé ici !
+      },
+
+      // Profil : Réservé aux utilisateurs connectés
+      { 
+        path: 'profile', 
+        component: ProfileComponent,
+        canActivate: [authGuard(['ADMINISTRATEUR', 'GESTIONNAIRE'])] 
+      },
+
+      // Tarification : Réservé aux équipes logistiques
+      { 
+        path: 'tarifs', 
+        component: ManageRatesComponent,
+        canActivate: [authGuard(['ADMINISTRATEUR', 'GESTIONNAIRE'])] 
       },
       
       // 📦 Suivi Colis : Ouvert à tout le monde (y compris les clients pour leur tracking)

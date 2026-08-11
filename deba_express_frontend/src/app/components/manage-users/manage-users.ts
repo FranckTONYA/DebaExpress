@@ -61,7 +61,7 @@ export class ManageUsersComponent implements OnInit {
       nom: user.nom || 'Non renseigné',
       prenom: user.prenom || 'Non renseigné',
       email: user.email,
-      telephone: user.telephone || '000000',
+      telephone: user.telephone,
       adresse: user.adresse || '',
       role: user.role,
       motDePasse: ''

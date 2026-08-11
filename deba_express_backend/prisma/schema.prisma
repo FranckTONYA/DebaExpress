@@ -84,8 +84,7 @@ model Colis {
   prixUnitaireApp Float              
   mesureApp       TypeMesure         
   
-  poids           Float?             
-  nombrePiece     Int?               
+  quantite        Float              
   prixTotal       Float
   dateDepot       DateTime
   dateEnvoi       DateTime
@@ -123,9 +122,9 @@ model Utilisateur {
   motDePasse String   // Hash bcrypt
   role       Role     @default(CLIENT)
   
-  nom        String?  // Optionnel (non obligatoire)
-  prenom     String?  // Optionnel (non obligatoire)
-  telephone  String?  // Optionnel (non obligatoire)
+  nom        String
+  prenom     String
+  telephone  String
   adresse    String?  // Optionnel (non obligatoire)
   
   createdAt  DateTime @default(now())

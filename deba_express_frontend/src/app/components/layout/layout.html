@@ -17,20 +17,21 @@
       <nav class="flex flex-col p-4 space-y-2">
         <a routerLink="/dashboard" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium">👤 Enregistrer un Client</a>
         
-        <!-- 💡 AJOUT MOBILE : Liste des Clients (Admin & Gestionnaire) -->
         @if (authService.currentRole() === 'ADMINISTRATEUR' || authService.currentRole() === 'GESTIONNAIRE') {
           <a routerLink="/gestion/clients" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium text-slate-300">📋 Liste des Clients</a>
+          <a routerLink="/tarifs" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium text-yellow-400">🗂️ Grille Tarifaire</a>
         }
         
         <a routerLink="/suivi-colis" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium text-slate-300">📦 Suivi des Envois</a>
         
         @if (authService.currentRole() === 'ADMINISTRATEUR') {
           <a routerLink="/admin/utilisateurs" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium text-yellow-400">➕ Ajouter un Agent</a>
-          <!-- 💡 AJOUT MOBILE : Gestion Utilisateurs (Admin uniquement) -->
           <a routerLink="/admin/gestion-utilisateurs" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium text-yellow-400">👑 Comptes Utilisateurs</a>
         }
         
-        <button (click)="deconnecter(); toggleMobileMenu()" class="w-full text-left text-red-400 font-bold px-4 py-3 border-t border-slate-800 pt-3">🚪 Se déconnecter</button>
+        <a routerLink="/profile" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium text-teal-400 border-t border-slate-800 pt-3">⚙️ Mon Profil Personnel</a>
+        
+        <button (click)="deconnecter(); toggleMobileMenu()" class="w-full text-left text-red-400 font-bold px-4 py-3">🚪 Se déconnecter</button>
       </nav>
     </div>
   }
@@ -49,26 +50,33 @@
       <nav class="space-y-2">
         <a routerLink="/dashboard" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-slate-300 hover:text-white px-4 py-3 rounded-xl font-medium transition-all">👤 Enregistrer un Client</a>
         
-        <!-- 💡 AJOUT PC : Liste des Clients (Admin & Gestionnaire) -->
         @if (authService.currentRole() === 'ADMINISTRATEUR' || authService.currentRole() === 'GESTIONNAIRE') {
-          <a routerLink="/gestion/clients" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-slate-300 hover:text-white px-4 py-3 rounded-xl font-medium transition-all">📋 Liste des Clients</a>
+            <a routerLink="/gestion/clients" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-slate-300 hover:text-white px-4 py-3 rounded-xl font-medium transition-all">📋 Liste des Clients</a>
+            <a routerLink="/tarifs" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-yellow-400 hover:bg-slate-800 px-4 py-3 rounded-xl font-medium transition-all border border-yellow-500/20">🗂️ Grille Tarifaire</a>
         }
         
         <a routerLink="/suivi-colis" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-slate-300 hover:text-white px-4 py-3 rounded-xl font-medium transition-all">📦 Suivi des Envois</a>
 
-        <!-- Séparateur visuel pour l'administration -->
         @if (authService.currentRole() === 'ADMINISTRATEUR') {
           <div class="pt-4 mt-4 border-t border-slate-700/60">
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2">Administration</p>
             <a routerLink="/admin/utilisateurs" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-yellow-400 hover:bg-slate-800 px-4 py-3 rounded-xl font-medium transition-all border border-yellow-500/20 mb-2">➕ Ajouter un Agent</a>
-            <!-- 💡 AJOUT PC : Gestion Utilisateurs (Admin uniquement) -->
-            <a routerLink="/admin/gestion-utilisateurs" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-yellow-400 hover:bg-slate-800 px-4 py-3 rounded-xl font-medium transition-all border border-yellow-500/20">👑 Comptes Utilisateurs</a>
+            <a routerLink="/admin/gestion-utilisateurs" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-yellow-400 hover:bg-slate-800 px-4 py-3 rounded-xl font-medium transition-all border border-yellow-500/20 mb-2">👑 Comptes Utilisateurs</a>
           </div>
         }
       </nav>
     </div>
     
-    <div class="border-t border-slate-700 pt-4 space-y-4">
+    <!-- Pied de la barre latérale fixe -->
+    <div class="border-t border-slate-700 pt-4 space-y-3">
+      <a 
+        routerLink="/profile" 
+        routerLinkActive="bg-deba-steel text-white" 
+        class="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-semibold transition-all text-sm shadow-xs"
+      >
+        ⚙️ Mon Profil
+      </a>
+
       <button (click)="deconnecter()" class="w-full flex items-center justify-center gap-2 bg-red-600/10 hover:bg-red-600 text-red-400 hover:text-white font-bold py-2.5 rounded-xl transition-all text-sm cursor-pointer shadow-sm">
         🚪 Se déconnecter
       </button>
@@ -76,7 +84,7 @@
     </div>
   </aside>
 
-  <!-- 📥 ZONE DE CONTENU DYNAMIQUE (Les sous-pages s'injecteront ici) -->
+  <!-- 📥 ZONE DE CONTENU DYNAMIQUE -->
   <main class="flex-1 p-4 md:p-10 overflow-y-auto max-w-full">
     <router-outlet></router-outlet>
   </main>
