@@ -3,7 +3,8 @@
   <!-- 📱 BARRE SUPÉRIEURE : Affichée UNIQUEMENT sur Mobile/Tablette -->
   <header class="bg-deba-dark text-white p-4 flex justify-between items-center md:hidden shadow-md sticky top-0 z-50">
     <div class="flex items-center gap-2">
-      <span class="text-xl">✈️</span>
+      <!-- 💡 LOGO SÉCURISÉ MOBILE -->
+      <img src="logo.jpg" alt="Logo Deba Express" class="w-8 h-8 rounded-lg object-cover shadow-sm bg-white">
       <span class="font-black tracking-wider text-sm">DEBA EXPRESS</span>
     </div>
     <button (click)="toggleMobileMenu()" class="text-2xl focus:outline-none cursor-pointer">
@@ -11,18 +12,17 @@
     </button>
   </header>
 
-  <!-- 📱 MENU DÉROULANT MOBILE : Affiché si activé sur Smartphone -->
+  <!-- 📱 MENU DÉROULANT MOBILE -->
   @if (isMobileMenuOpen()) {
     <div class="bg-slate-900 text-white md:hidden border-b border-slate-800 animate-fade-in z-40">
       <nav class="flex flex-col p-4 space-y-2">
-        <a routerLink="/dashboard" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium">👤 Enregistrer un Client</a>
+        <a routerLink="/dashboard" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium">🚀 Nouvel Envoi / Client</a>
         
         @if (authService.currentRole() === 'ADMINISTRATEUR' || authService.currentRole() === 'GESTIONNAIRE') {
-          <a routerLink="/gestion/clients" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium text-slate-300">📋 Liste des Clients</a>
+          <a routerLink="/gestion/colis" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium text-slate-300">📦 Liste des Colis</a>
           <a routerLink="/tarifs" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium text-yellow-400">🗂️ Grille Tarifaire</a>
+          <a routerLink="/gestion/clients" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium text-slate-300">📋 Liste des Clients</a>
         }
-        
-        <a routerLink="/suivi-colis" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium text-slate-300">📦 Suivi des Envois</a>
         
         @if (authService.currentRole() === 'ADMINISTRATEUR') {
           <a routerLink="/admin/utilisateurs" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium text-yellow-400">➕ Ajouter un Agent</a>
@@ -30,7 +30,6 @@
         }
         
         <a routerLink="/profile" (click)="toggleMobileMenu()" routerLinkActive="bg-deba-steel" class="px-4 py-3 rounded-xl font-medium text-teal-400 border-t border-slate-800 pt-3">⚙️ Mon Profil Personnel</a>
-        
         <button (click)="deconnecter(); toggleMobileMenu()" class="w-full text-left text-red-400 font-bold px-4 py-3">🚪 Se déconnecter</button>
       </nav>
     </div>
@@ -40,7 +39,8 @@
   <aside class="w-64 bg-deba-dark text-white flex flex-col justify-between p-6 hidden md:flex shadow-xl shrink-0 h-screen sticky top-0">
     <div>
       <div class="flex items-center gap-3 mb-10 pb-4 border-b border-slate-700">
-        <div class="bg-white p-2 rounded-full shadow-md text-xl">✈️</div>
+        <!-- 💡 LOGO SÉCURISÉ PC -->
+        <img src="logo.jpg" alt="Logo Deba Express" class="w-12 h-12 rounded-xl object-cover shadow-md bg-white">
         <div>
           <h1 class="text-xl font-black tracking-wider text-white">DEBAEXPRESS</h1>
           <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">By Air To Your Door</p>
@@ -48,26 +48,25 @@
       </div>
 
       <nav class="space-y-2">
-        <a routerLink="/dashboard" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-slate-300 hover:text-white px-4 py-3 rounded-xl font-medium transition-all">👤 Enregistrer un Client</a>
+        <a routerLink="/dashboard" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-slate-300 hover:text-white px-4 py-3 rounded-xl font-medium transition-all">🚀 Nouvel Envoi / Client</a>
         
         @if (authService.currentRole() === 'ADMINISTRATEUR' || authService.currentRole() === 'GESTIONNAIRE') {
-            <a routerLink="/gestion/clients" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-slate-300 hover:text-white px-4 py-3 rounded-xl font-medium transition-all">📋 Liste des Clients</a>
-            <a routerLink="/tarifs" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-yellow-400 hover:bg-slate-800 px-4 py-3 rounded-xl font-medium transition-all border border-yellow-500/20">🗂️ Grille Tarifaire</a>
+          <a routerLink="/gestion/colis" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-slate-300 hover:text-white px-4 py-3 rounded-xl font-medium transition-all">📦 Liste des Colis</a>
+          <a routerLink="/tarifs" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-yellow-400 hover:bg-slate-800 px-4 py-3 rounded-xl font-medium transition-all border border-yellow-500/20">🗂️ Grille Tarifaire</a>
+          <a routerLink="/gestion/clients" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-slate-300 hover:text-white px-4 py-3 rounded-xl font-medium transition-all">📋 Liste des Clients</a>
         }
-        
-        <a routerLink="/suivi-colis" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-slate-300 hover:text-white px-4 py-3 rounded-xl font-medium transition-all">📦 Suivi des Envois</a>
 
         @if (authService.currentRole() === 'ADMINISTRATEUR') {
           <div class="pt-4 mt-4 border-t border-slate-700/60">
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2">Administration</p>
             <a routerLink="/admin/utilisateurs" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-yellow-400 hover:bg-slate-800 px-4 py-3 rounded-xl font-medium transition-all border border-yellow-500/20 mb-2">➕ Ajouter un Agent</a>
-            <a routerLink="/admin/gestion-utilisateurs" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-yellow-400 hover:bg-slate-800 px-4 py-3 rounded-xl font-medium transition-all border border-yellow-500/20 mb-2">👑 Comptes Utilisateurs</a>
+            <a routerLink="/admin/gestion-utilisateurs" routerLinkActive="bg-deba-steel" class="flex items-center gap-3 text-yellow-400 hover:bg-slate-800 px-4 py-3 rounded-xl font-medium transition-all border border-yellow-500/20 mb-2">👑 Utilisateurs</a>
           </div>
         }
       </nav>
     </div>
     
-    <!-- Pied de la barre latérale fixe -->
+    <!-- Pied de la barre latérale fixe révisé et refermé -->
     <div class="border-t border-slate-700 pt-4 space-y-3">
       <a 
         routerLink="/profile" 

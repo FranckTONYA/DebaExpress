@@ -1,0 +1,84 @@
+<div class="min-h-screen bg-slate-50 flex flex-col justify-between font-sans text-slate-800">
+
+  <!-- Header -->
+  <header class="bg-white border-b px-6 py-4 flex justify-between items-center shadow-xs">
+    <!-- 💡 BLOC EN-TÊTE RENDU CLIQUABLE ET REDIRIGEANT VERS L'ACCUEIL -->
+    <a routerLink="/" class="flex items-center gap-2 cursor-pointer group select-none">
+    <img src="logo.jpg" alt="Logo Deba Express" class="w-8 h-8 rounded-lg object-cover transition-transform group-hover:scale-105 duration-200">
+    <span class="font-black tracking-wider text-sm text-[#0A2540] group-hover:text-blue-600 transition-colors duration-200">
+        DEBA EXPRESS
+    </span>
+    </a>
+
+    <a routerLink="/" class="text-xs font-bold text-slate-500 hover:underline">🏠 Retour Accueil</a>
+  </header>
+
+  <!-- Zone de Saisie Principale -->
+  <main class="flex-1 max-w-xl w-full mx-auto p-4 md:py-12 space-y-6">
+    <div class="bg-white rounded-3xl p-6 md:p-8 shadow-md border border-slate-100 text-center space-y-4">
+      <h2 class="text-xl font-black text-[#0A2540]">Suivi temps réel de votre colis</h2>
+      <p class="text-xs text-slate-400 font-medium">Saisissez le code fourni lors du dépôt (Format: DEBA-XXXXXX) pour localiser vos articles.</p>
+
+        <form (ngSubmit)="rechercherSuivi()" class="flex gap-2 pt-2">
+        <input 
+            type="text" 
+            [ngModel]="codeSaisi()" 
+            (ngModelChange)="codeSaisi.set($event)" 
+            name="codeSuiviPublic"
+            placeholder="Ex: DEBA-K2J8A1" 
+            class="flex-1 bg-slate-50 border border-slate-200 px-4 py-3 text-base font-mono font-bold tracking-wider rounded-xl focus:outline-none uppercase text-deba-dark"
+        >
+        <button type="submit" [disabled]="isLoading()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-5 rounded-xl shadow-md cursor-pointer shrink-0">
+            @if (isLoading()) { ... } @else { Tracker }
+        </button>
+        </form>
+
+
+      @if (erreurMessage()) {
+        <p class="p-3 bg-red-50 text-red-600 text-xs font-bold rounded-xl animate-fade-in">⚠️ {{ erreurMessage() }}</p>
+      }
+    </div>
+
+    <!-- 📊 BLOC RÉSULTAT : Chronologie de Livraison réactive -->
+    @if (colisTrouve()) {
+      <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 space-y-6 animate-fade-in">
+        <div class="flex justify-between items-center border-b pb-3">
+          <div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Code Expédition</p>
+            <h3 class="text-lg font-mono font-black text-deba-steel">{{ colisTrouve().codeSuivi }}</h3>
+          </div>
+          <span class="text-xs font-black bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1.5 rounded-full uppercase tracking-wider">
+            Statut : {{ colisTrouve().statut }}
+          </span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 text-xs font-bold text-slate-500">
+          <div>
+            <p class="text-slate-400 font-medium">🛫 Destination Vol</p>
+            <p class="text-base text-deba-dark mt-0.5">{{ colisTrouve().destination }}</p>
+          </div>
+          <div>
+            <p class="text-slate-400 font-medium">⚖️ Quantité fret</p>
+            <p class="text-base text-deba-dark mt-0.5">{{ colisTrouve().quantite }} {{ colisTrouve().mesureApp === 'POIDS' ? 'KG' : 'Articles' }}</p>
+          </div>
+        </div>
+
+        <!-- Chronologie Épurée (Steps) -->
+        <div class="pt-4 border-t space-y-2">
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Informations Horodatées</p>
+          <div class="text-xs text-slate-600 space-y-1 font-medium">
+            <p>📥 Enregistré le : {{ colisTrouve().dateDepot | date:'dd/MM/yyyy' }}</p>
+            <p>✈️ Date estimée d'arrivée : {{ colisTrouve().dateReception | date:'dd/MM/yyyy' }}</p>
+            @if (colisTrouve().etatSortie) {
+              <p class="pt-2 text-deba-steel font-bold">📋 Note d'état à l'arrivée : {{ colisTrouve().etatSortie }}</p>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </main>
+
+  <footer class="p-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-100">
+    Deba Express Premium Gateway
+  </footer>
+</div>

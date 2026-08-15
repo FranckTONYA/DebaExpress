@@ -1,52 +1,105 @@
-<div class="space-y-6 max-w-5xl mx-auto">
-  <header>
-    <h2 class="text-2xl font-extrabold text-deba-dark">Configuration de la Nomenclature Fret</h2>
-    <p class="text-sm text-slate-500">Gérez dynamiquement vos catégories logistiques, grilles de prix unitaires et types de mesure.</p>
+<div class="space-y-6 max-w-6xl mx-auto p-2 text-base relative">
+  
+  <header class="space-y-1">
+    <h2 class="text-2xl md:text-3xl font-black text-deba-dark tracking-tight">Configuration des grilles tarifaires</h2>
+    <p class="text-sm md:text-base text-slate-500 font-medium">Gérez vos catégories logistiques, grilles de prix unitaires et types de mesure.</p>
   </header>
+
+  <!-- 🟢 NOTIFICATIONS FLOTTANTES FIXES (TOASTS) : Visibles partout sans scroller -->
+  <div class="fixed top-6 right-6 z-50 space-y-3 w-full max-w-sm px-4 md:px-0 pointer-events-none">
+    
+    <!-- Notification de Succès -->
+    @if (succesMessage()) {
+      <div class="p-4 bg-green-600 text-white rounded-2xl shadow-xl font-bold animate-fade-in flex items-start gap-3 pointer-events-auto border border-green-500">
+        <span class="text-xl shrink-0">✅</span>
+        <div class="flex-1">
+          <p class="text-sm tracking-wide">{{ succesMessage() }}</p>
+        </div>
+        <button (click)="nettoyerMessages()" class="text-white hover:text-green-200 text-xs font-black uppercase tracking-wider shrink-0 cursor-pointer pl-2">✕</button>
+      </div>
+    }
+
+    <!-- Notification d'Erreur / Blocage de sécurité -->
+    @if (erreurMessage()) {
+      <div class="p-4 bg-red-600 text-white rounded-2xl shadow-xl font-bold animate-fade-in flex items-start gap-3 pointer-events-auto border border-red-500">
+        <span class="text-xl shrink-0">⚠️</span>
+        <div class="flex-1">
+          <p class="text-sm tracking-wide">{{ erreurMessage() }}</p>
+        </div>
+        <button (click)="nettoyerMessages()" class="text-white hover:text-red-200 text-xs font-black uppercase tracking-wider shrink-0 cursor-pointer pl-2">✕</button>
+      </div>
+    }
+
+  </div>
+
+  <!-- MODULE DE RECHERCHE, DE FILTRAGE ET DE TRI -->
+  <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4 items-end">
+    <div class="flex-1 w-full">
+      <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Rechercher une catégorie ou sous-catégorie</label>
+      <input type="text" [ngModel]="recherche()" (ngModelChange)="recherche.set($event); pageActuelle.set(1)" placeholder="Taper un terme pour filtrer les grilles..." class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 text-base rounded-xl font-medium focus:outline-none text-deba-dark">
+    </div>
+    <div class="w-full md:w-auto">
+      <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Trier par</label>
+      <select [ngModel]="critereTri()" (ngModelChange)="critereTri.set($event)" class="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 text-base rounded-xl font-bold focus:outline-none text-deba-dark">
+        <option value="nom">🔤 Alphabet (Nom)</option>
+        <option value="prixUnitaire">💰 Prix générique</option>
+      </select>
+    </div>
+    <button (click)="toggleOrdre()" class="w-full md:w-auto bg-slate-100 hover:bg-slate-200 border p-2.5 text-base font-extrabold rounded-xl text-deba-steel transition-all cursor-pointer h-[48px] px-5">
+      {{ ordreTri() === 'asc' ? '▲ Croissant' : '▼ Décroissant' }}
+    </button>
+  </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     
-    <!-- 📄 BLOC GAUCHE : Formulaire de création Catégorie Racine -->
-    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 h-fit">
-      <h3 class="text-base font-bold text-deba-steel border-b pb-2 mb-4">📂 Nouvelle Catégorie Racine</h3>
+    <!-- 📂 FORMULAIRE AJOUT CATÉGORIE RACINE -->
+    <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 h-fit space-y-5">
+      <h3 class="text-lg font-black text-deba-steel border-b pb-2">📂 Nouvelle Catégorie Racine</h3>
       <form [formGroup]="catForm" (ngSubmit)="creerCategorie()" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-slate-500 mb-1">Nom de la Catégorie</label>
-          <input type="text" formControlName="nom" placeholder="Ex: Électronique" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
+          <label class="block text-sm font-bold text-slate-600 mb-1">Nom de la Catégorie <span class="text-red-500">*</span></label>
+          <input type="text" formControlName="nom" placeholder="Ex: Électronique" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark font-medium">
+          @if (catForm.get('nom')?.invalid && catForm.get('nom')?.touched) {
+            <p class="text-xs text-red-500 font-semibold mt-1">⚠️ Nom obligatoire (minimum 2 caractères).</p>
+          }
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-500 mb-1">Description (Optionnelle)</label>
-          <input type="text" formControlName="description" placeholder="Matériel technologique..." class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
+          <label class="block text-sm font-bold text-slate-600 mb-1">Description <span class="text-slate-400 font-normal">(Optionnelle)</span></label>
+          <input type="text" formControlName="description" placeholder="Matériel fragile..." class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-bold text-slate-500 mb-1">Prix par Défaut</label>
-            <input type="number" formControlName="prixUnitaire" placeholder="12.5" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
+            <label class="block text-sm font-bold text-slate-600 mb-1">Prix de base <span class="text-red-500">*</span></label>
+            <input type="number" formControlName="prixUnitaire" placeholder="Ex: 12.5" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark font-bold">
+            @if (catForm.get('prixUnitaire')?.invalid && catForm.get('prixUnitaire')?.touched) {
+              <p class="text-xs text-red-500 font-semibold mt-1">⚠️ Un prix >= 0 est requis.</p>
+            }
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-500 mb-1">Unité par Défaut</label>
-            <select formControlName="mesure" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark font-semibold">
+            <label class="block text-sm font-bold text-slate-600 mb-1">Unité de mesure <span class="text-red-500">*</span></label>
+            <select formControlName="mesure" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark font-black">
               <option value="POIDS">⚖️ KG</option>
               <option value="PIECE">📦 PIÈCE</option>
             </select>
           </div>
         </div>
-        <button type="submit" [disabled]="catForm.invalid" class="w-full bg-deba-dark text-white text-sm font-bold py-3 rounded-xl shadow-md cursor-pointer disabled:opacity-40"> Créer la Catégorie </button>
+        <button type="submit" [disabled]="catForm.invalid" class="w-full bg-deba-dark text-white text-sm font-black py-3.5 rounded-xl shadow-md cursor-pointer transition-all disabled:opacity-40"> 💾 Enregistrer la catégorie </button>
       </form>
     </div>
 
-    <!-- 📊 BLOC DROITE : Arborescence de Tarification dynamique -->
-    <div class="lg:col-span-2 space-y-4">
-      @for (cat of categories(); track cat.id) {
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-4">
-          <div class="flex justify-between items-start border-b pb-3 flex-wrap gap-2">
+    <!-- 📊 BLOC DE DROITE : Arborescence avec mise en page flexible adaptative -->
+    <div class="lg:col-span-2 space-y-5">
+      @for (cat of categoriesPage(); track cat.id) {
+        <div class="bg-white rounded-3xl p-5 md:p-6 shadow-md border border-slate-100 space-y-4 animate-fade-in">
+          
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-3 gap-3">
             <div>
               <h4 class="text-lg font-black text-deba-dark flex items-center gap-2">📂 {{ cat.nom }}</h4>
-              <p class="text-xs text-slate-400 font-medium italic mt-0.5">{{ cat.description || 'Aucune description' }}</p>
+              <p class="text-xs text-slate-400 font-medium italic mt-0.5">{{ cat.description || 'Aucune description rédigée.' }}</p>
             </div>
-            <div class="flex items-center gap-3">
-              <span class="bg-slate-100 text-deba-dark text-xs px-2.5 py-1 rounded-full font-black">
-                Base : {{ cat.prixUnitaire }} € / {{ cat.mesure === 'POIDS' ? 'KG' : 'Pcs' }}
+            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+              <span class="bg-deba-dark text-white text-xs px-3 py-1.5 rounded-full font-black tracking-wide">
+                {{ cat.prixUnitaire }} € / {{ cat.mesure === 'POIDS' ? 'KG' : 'Pièce' }}
               </span>
               <button (click)="ouvrirModaleCat(cat)" class="text-deba-steel text-xs font-bold hover:underline cursor-pointer">✏️ Éditer</button>
               <button (click)="supprimerCat(cat.id)" class="text-red-500 text-xs font-bold hover:underline cursor-pointer">🗑️ Supprimer</button>
@@ -54,146 +107,180 @@
           </div>
 
           <!-- Liste des enfants de la catégorie -->
-          <div class="space-y-2 pl-4 border-l-2 border-slate-200">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Sous-catégories et Surcharges</p>
+          <div class="space-y-3 pl-3 border-l-4 border-slate-100">
+            <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Sous-catégories & Dérivés Tarifaires</p>
             
             @for (sub of cat.sousCategories; track sub.id) {
-              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-50/70 p-3 rounded-xl text-sm gap-2">
-                <span class="font-semibold text-deba-dark">↳ {{ sub.nom }}</span>
-                <div class="flex items-center gap-2 flex-wrap w-full sm:w-auto justify-end">
+              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-50 p-3 rounded-xl text-sm gap-3">
+                <span class="font-bold text-deba-dark text-sm">↳ {{ sub.nom }}</span>
+                <div class="flex items-center gap-2 flex-wrap w-full sm:w-auto justify-start sm:justify-end">
                   
-                  <!-- Statut du Prix Unitaire -->
+                  <!-- Surcharges vs Héritages -->
                   @if (sub.prixUnitaire === null) {
-                    <span class="text-[10px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded font-medium">💰 Tarification héritée</span>
+                    <span class="text-[11px] bg-slate-200/80 text-slate-700 px-2.5 py-0.5 rounded font-medium">💰 Prix hérité : <strong>{{ cat.prixUnitaire }} €</strong></span>
                   } @else {
-                    <span class="text-[10px] bg-teal-50 text-teal-700 border border-teal-200 px-2 py-0.5 rounded font-bold">💰 Spécifique : {{ sub.prixUnitaire }} €</span>
+                    <span class="text-[11px] bg-teal-50 text-teal-700 border border-teal-200 px-2.5 py-0.5 rounded font-bold">💰 Prix spécifique : {{ sub.prixUnitaire }} €</span>
                   }
 
-                  <!-- Statut du Type de mesure -->
                   @if (sub.mesure === null) {
-                    <span class="text-[10px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded font-medium">⚖️ Unité héritée</span>
+                    <span class="text-[11px] bg-slate-200/80 text-slate-700 px-2.5 py-0.5 rounded font-medium">⚖️ Unité héritée : <strong>{{ cat.mesure === 'POIDS' ? 'KG' : 'Pièce' }}</strong></span>
                   } @else {
-                    <span class="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded font-bold">⚖️ Unité : {{ sub.mesure === 'POIDS' ? 'KG' : 'Pièce' }}</span>
+                    <span class="text-[11px] bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-0.5 rounded font-bold">⚖️ Unité spécifique : {{ sub.mesure === 'POIDS' ? 'KG' : 'Pièce' }}</span>
                   }
 
-                  <button (click)="ouvrirModaleSub(sub)" class="text-xs text-deba-steel hover:text-deba-dark font-medium pl-2 cursor-pointer">✏️</button>
-                  <button (click)="supprimerSub(sub.id)" class="text-xs text-red-500 hover:text-red-700 font-medium pl-1 cursor-pointer">✕</button>
+                  <div class="flex gap-2 ml-auto sm:ml-2">
+                    <button (click)="ouvrirModaleSub(sub)" class="text-xs text-deba-steel hover:text-deba-dark font-black p-1 cursor-pointer">✏️</button>
+                    <button (click)="supprimerSub(sub.id)" class="text-xs text-red-500 hover:text-red-700 font-black p-1 cursor-pointer">✕</button>
+                  </div>
                 </div>
               </div>
             }
 
-            <!-- Mini formulaire en ligne pour ajouter une sous-catégorie -->
-            <form [formGroup]="subForm" (ngSubmit)="creerSousCategorie(cat.id)" class="pt-3 flex flex-wrap sm:flex-nowrap gap-2 items-center">
-              <input type="text" formControlName="nom" placeholder="Sous-catégorie (Ex: Téléphone)" class="flex-1 bg-slate-50 border border-slate-200 px-3 py-2 text-xs rounded-xl focus:outline-none text-deba-dark font-medium">
-              <input type="number" formControlName="prixUnitaire" placeholder="Prix Surchargé (Optionnel)" class="w-full sm:w-36 bg-slate-50 border border-slate-200 px-3 py-2 text-xs rounded-xl focus:outline-none text-deba-dark">
-              <select formControlName="mesure" class="w-full sm:w-28 bg-slate-50 border border-slate-200 px-2 py-2 text-xs rounded-xl focus:outline-none text-deba-dark font-medium">
-                <option value="">Hériter unité</option>
-                <option value="POIDS">⚖️ KG</option>
-                <option value="PIECE">📦 PIÈCE</option>
-              </select>
-              <button type="submit" [disabled]="subForm.get('nom')?.invalid" class="w-full sm:w-auto bg-deba-steel text-white text-xs font-bold px-3 py-2 rounded-xl shadow-xs cursor-pointer disabled:opacity-40">➕</button>
+            <!-- 💡 MINI FORMULAIRE REMANIÉ : Utilisation d'identifiants natifs du DOM pour l'indépendance des boutons -->
+            <form [formGroup]="subForm" (ngSubmit)="creerSousCategorie(cat.id)" class="pt-3 flex flex-col sm:flex-row flex-wrap md:flex-nowrap gap-2 items-stretch sm:items-center w-full overflow-hidden">
+              
+              <!-- Champ Nom : S'étire au maximum -->
+              <div class="flex-1 min-w-[140px]">
+                <input 
+                  #subNom
+                  type="text" 
+                  formControlName="nom" 
+                  placeholder="Nom Sous-catégorie *" 
+                  class="w-full bg-slate-50 border border-slate-200 px-3 py-2 text-xs rounded-xl focus:outline-none text-deba-dark font-medium"
+                >
+              </div>
+
+              <!-- Champ Prix : Taille fixe minimale pour ne pas écraser le reste -->
+              <div class="w-full sm:w-32 shrink-0">
+                <input 
+                  type="number" 
+                  formControlName="prixUnitaire" 
+                  placeholder="Prix (Optionnel)" 
+                  class="w-full bg-slate-50 border border-slate-200 px-3 py-2 text-xs rounded-xl focus:outline-none text-deba-dark"
+                >
+              </div>
+
+              <!-- Bloc Unité + Bouton : Reste groupé de manière étanche -->
+              <div class="flex gap-2 w-full sm:w-48 shrink-0">
+                <select formControlName="mesure" class="flex-1 bg-slate-50 border border-slate-200 px-2 py-2 text-xs rounded-xl focus:outline-none text-deba-dark font-bold min-w-[80px]">
+                  <option value="">Hériter</option>
+                  <option value="POIDS">⚖️ KG</option>
+                  <option value="PIECE">📦 Pièce</option>
+                </select>
+                
+                <button 
+                  type="submit" 
+                  [disabled]="!subNom.value || subNom.value.trim().length < 2" 
+                  class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-black px-4 py-2 rounded-xl shadow-md cursor-pointer shrink-0 disabled:opacity-30 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all duration-200 active:scale-95 whitespace-nowrap"
+                >
+                  ➕ Ajouter
+                </button>
+              </div>
+
             </form>
 
           </div>
         </div>
       }
     </div>
+
+  </div>
+
+  <!-- PAGINATION CENTRALISÉE DE L'ARBORESCENCE -->
+  <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col sm:flex-row justify-between items-center text-xs md:text-sm font-bold text-slate-500 gap-3">
+    <p>Affichage des catégories {{ (pageActuelle()-1)*elementsParPage + 1 }} à {{ mathMin(pageActuelle()*elementsParPage, categoriesFiltrees().length) }} sur {{ categoriesFiltrees().length }}</p>
+    <div class="flex gap-2 items-center w-full sm:w-auto justify-between sm:justify-end">
+      <button (click)="changerPage(pageActuelle() - 1)" [disabled]="pageActuelle() === 1" class="px-3 py-2 bg-white border border-slate-200 rounded-xl disabled:opacity-40 font-bold transition-all cursor-pointer">◀ Précédent</button>
+      <span class="px-2">Page {{ pageActuelle() }} / {{ pagesTotales() }}</span>
+      <button (click)="changerPage(pageActuelle() + 1)" [disabled]="pageActuelle() === pagesTotales()" class="px-3 py-2 bg-white border border-slate-200 rounded-xl disabled:opacity-40 font-bold transition-all cursor-pointer">Suivant ▶</button>
+    </div>
   </div>
 
   <!-- ✏️ MODALE DE MODIFICATION CATÉGORIE -->
   @if (modalCatSelectionnee()) {
-    <div class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-      <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-xl border space-y-4">
-        <h3 class="text-lg font-bold text-deba-dark border-b pb-2">✏️ Éditer la Catégorie</h3>
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
+      <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-xl border border-slate-100 space-y-4">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+          <h3 class="text-base font-bold text-deba-dark">✏️ Éditer la Catégorie</h3>
+          <button (click)="modalCatSelectionnee.set(null)" class="text-slate-400 text-xl hover:text-slate-600 cursor-pointer">✕</button>
+        </div>
         <form [formGroup]="editCatForm" (ngSubmit)="sauvegarderCategorie()" class="space-y-4">
           <div>
-            <label class="block text-xs font-bold text-slate-400 mb-1">Nom</label>
-            <input type="text" formControlName="nom" class="w-full bg-slate-50 border p-3 text-sm rounded-xl focus:outline-none">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Nom <span class="text-red-500">*</span></label>
+            <input type="text" formControlName="nom" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark font-medium">
+            @if (editCatForm.get('nom')?.invalid && editCatForm.get('nom')?.touched) {
+              <p class="text-xs text-red-500 font-semibold mt-1">⚠️ Le nom doit contenir au moins 2 caractères.</p>
+            }
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-400 mb-1">Description</label>
-            <input type="text" formControlName="description" class="w-full bg-slate-50 border p-3 text-sm rounded-xl focus:outline-none">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Description</label>
+            <input type="text" formControlName="description" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-bold text-slate-400 mb-1">Prix unitaire</label>
-              <input type="number" formControlName="prixUnitaire" class="w-full bg-slate-50 border p-3 text-sm rounded-xl focus:outline-none">
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Prix unitaire <span class="text-red-500">*</span></label>
+              <input type="number" formControlName="prixUnitaire" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark font-medium">
+              @if (editCatForm.get('prixUnitaire')?.invalid && editCatForm.get('prixUnitaire')?.touched) {
+                <p class="text-xs text-red-500 font-semibold mt-1">⚠️ Un prix >= 0 est requis.</p>
+              }
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-400 mb-1">Unité</label>
-              <select formControlName="mesure" class="w-full bg-slate-50 border p-3 text-sm rounded-xl focus:outline-none font-bold">
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Unité</label>
+              <select formControlName="mesure" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark font-bold">
                 <option value="POIDS">⚖️ KG</option>
                 <option value="PIECE">📦 PIÈCE</option>
               </select>
             </div>
           </div>
-          <div class="flex justify-end gap-2 pt-2">
+          <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
             <button type="button" (click)="modalCatSelectionnee.set(null)" class="px-4 py-2 text-xs bg-slate-100 rounded-xl font-bold cursor-pointer">Annuler</button>
-            <button type="submit" [disabled]="editCatForm.invalid" class="px-4 py-2 text-xs bg-deba-dark text-white rounded-xl font-bold cursor-pointer">Enregistrer</button>
+            <button type="submit" [disabled]="editCatForm.invalid" class="px-4 py-2 text-xs bg-deba-dark text-white rounded-xl font-bold cursor-pointer shadow-md disabled:opacity-40">Enregistrer</button>
           </div>
         </form>
       </div>
     </div>
   }
 
- <!-- ✏️ MODALE DE MODIFICATION CATÉGORIE -->
-@if (modalCatSelectionnee()) {
-  <div class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
-    <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-xl border border-slate-100 space-y-4">
-      
-      <!-- En-tête de la modale -->
-      <div class="flex justify-between items-center border-b border-slate-100 pb-2">
-        <h3 class="text-lg font-bold text-deba-dark">✏️ Éditer la Catégorie</h3>
-        <button (click)="modalCatSelectionnee.set(null)" class="text-slate-400 text-xl hover:text-slate-600 cursor-pointer">✕</button>
-      </div>
-
-      <!-- Corps du formulaire de modification -->
-      <form [formGroup]="editCatForm" (ngSubmit)="sauvegarderCategorie()" class="space-y-4">
-        
-        <!-- Nom de la catégorie -->
-        <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Nom de la Catégorie</label>
-          <input type="text" formControlName="nom" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark font-medium">
-          @if (editCatForm.get('nom')?.invalid && editCatForm.get('nom')?.touched) {
-            <p class="text-xs text-red-500 font-medium mt-1">⚠️ Le nom de la catégorie est obligatoire.</p>
-          }
+  <!-- ✏️ MODALE DE MODIFICATION SOUS-CATÉGORIE -->
+  @if (modalSubSelectionnee()) {
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
+      <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-xl border border-slate-100 space-y-4">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+          <h3 class="text-base font-bold text-deba-dark">✏️ Éditer la Sous-Catégorie</h3>
+          <button (click)="modalSubSelectionnee.set(null)" class="text-slate-400 text-xl hover:text-slate-600 cursor-pointer">✕</button>
         </div>
-
-        <!-- Description de la catégorie -->
-        <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Description</label>
-          <input type="text" formControlName="description" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
-        </div>
-
-        <!-- Prix et Unité de mesure -->
-        <div class="grid grid-cols-2 gap-3">
+        <form [formGroup]="editSubForm" (ngSubmit)="sauvegarderSousCategorie()" class="space-y-4">
           <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Prix unitaire</label>
-            <input type="number" formControlName="prixUnitaire" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark font-medium">
-            @if (editCatForm.get('prixUnitaire')?.invalid && editCatForm.get('prixUnitaire')?.touched) {
-              <p class="text-xs text-red-500 font-medium mt-1">⚠️ Prix invalide.</p>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Nom de la sous-catégorie <span class="text-red-500">*</span></label>
+            <input type="text" formControlName="nom" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark font-medium">
+            @if (editSubForm.get('nom')?.invalid && editSubForm.get('nom')?.touched) {
+              <p class="text-xs text-red-500 font-semibold mt-1">⚠️ Le nom doit contenir au moins 2 caractères.</p>
             }
           </div>
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Unité de calcul</label>
-            <select formControlName="mesure" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark font-bold">
-              <option value="POIDS">⚖️ KG</option>
-              <option value="PIECE">📦 PIÈCE</option>
-            </select>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Prix Surchargé</label>
+              <input type="number" formControlName="prixUnitaire" placeholder="Laisser vide pour hériter" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark font-medium">
+              @if (editSubForm.get('prixUnitaire')?.invalid && editSubForm.get('prixUnitaire')?.touched) {
+                <p class="text-xs text-red-500 font-semibold mt-1">⚠️ Le prix spécifié doit être >= 0.</p>
+              }
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Unité Spécifique</label>
+              <select formControlName="mesure" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark font-bold">
+                <option value="">Hériter de la catégorie</option>
+                <option value="POIDS">⚖️ KG</option>
+                <option value="PIECE">📦 PIÈCE</option>
+              </select>
+            </div>
           </div>
-        </div>
-
-        <!-- Boutons d'action bas de fenêtre -->
-        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-          <button type="button" (click)="modalCatSelectionnee.set(null)" class="px-4 py-2.5 text-xs bg-slate-100 text-slate-600 rounded-xl font-bold cursor-pointer transition-all hover:bg-slate-200">
-            Annuler
-          </button>
-          <button type="submit" [disabled]="editCatForm.invalid" class="px-5 py-2.5 text-xs bg-deba-dark text-white rounded-xl font-bold cursor-pointer shadow-md transition-all disabled:opacity-40 disabled:cursor-not-allowed">
-            💾 Enregistrer
-          </button>
-        </div>
-
-      </form>
+          <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+            <button type="button" (click)="modalSubSelectionnee.set(null)" class="px-4 py-2 text-xs bg-slate-100 rounded-xl font-bold cursor-pointer">Annuler</button>
+            <button type="submit" [disabled]="editSubForm.invalid" class="px-4 py-2 text-xs bg-deba-dark text-white rounded-xl font-bold cursor-pointer shadow-md disabled:opacity-40">Enregistrer</button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
-}
+  }
+
+</div>

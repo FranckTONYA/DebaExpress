@@ -1,95 +1,165 @@
-<!-- En-tête fluide -->
-<header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-  <div>
-    <h2 class="text-2xl font-extrabold tracking-tight text-deba-dark">Espace Clientèle Logistique</h2>
-    <p class="text-sm text-slate-500">Ajoutez de nouveaux expéditeurs à votre registre pour éditer leurs fiches de fret.</p>
-  </div>
-    <div class="bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200 flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-green-500 anonymity-pulse animate-pulse"></span>
-      <span class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Session : {{ authService.currentRole() }}</span>
-    </div>
-</header>
+<div class="space-y-6 max-w-5xl mx-auto">
+  <header>
+    <h2 class="text-2xl font-extrabold text-deba-dark">Nouvel enregistrement de Colis</h2>
+    <p class="text-sm text-slate-500">Inscrivez un expéditeur et ajoutez un ou plusieurs colis simultanément.</p>
+  </header>
 
-<!-- Formulaire d'Enregistrement de Client Épuré -->
-<div class="max-w-3xl bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-100">
-  <h3 class="text-lg font-bold mb-6 text-deba-steel border-b pb-3">👤 Fiche d'Inscription Nouveau Client</h3>
-
-  <!-- Alertes contextuelles réactives d'état -->
-  @if (erreurMessage()) {
-    <div class="mb-5 p-4 bg-red-50 border-l-4 border-red-500 rounded-xl text-red-700 text-sm font-medium">
-      ⚠️ {{ erreurMessage() }}
-    </div>
-  }
-  @if (succesMessage()) {
-    <div class="mb-5 p-4 bg-green-50 border-l-4 border-green-500 rounded-xl text-green-700 text-sm font-medium">
-      ✅ {{ succesMessage() }}
-    </div>
-  }
-
-<div class="max-w-3xl bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
-  <form [formGroup]="clientForm" (ngSubmit)="enregistrerClient()" class="space-y-5">
+  <form [formGroup]="fretForm" (ngSubmit)="verifierDoublonEtEnregistrer()" class="space-y-6">
     
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Nom</label>
-        <input formControlName="nom" type="text" class="w-full bg-slate-50 border p-3.5 text-sm rounded-xl focus:outline-none">
-        @if (clientForm.get('nom')?.invalid && clientForm.get('nom')?.touched) {
-          <p class="text-xs text-red-500 font-medium mt-1">⚠️ Le nom doit contenir au moins 2 caractères.</p>
-        }
-      </div>
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Prénom</label>
-        <input formControlName="prenom" type="text" class="w-full bg-slate-50 border p-3.5 text-sm rounded-xl focus:outline-none">
-        @if (clientForm.get('prenom')?.invalid && clientForm.get('prenom')?.touched) {
-          <p class="text-xs text-red-500 font-medium mt-1">⚠️ Le prénom doit contenir au moins 2 caractères.</p>
-        }
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-      <!-- Champ Date de Naissance -->
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Date de naissance</label>
-        <input 
-          formControlName="dateNaissance" 
-          type="date" 
-          class="w-full bg-slate-50 border border-slate-200 text-deba-dark rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-deba-steel focus:bg-white transition-all"
-          required
-        >
-        @if (clientForm.get('dateNaissance')?.invalid && clientForm.get('dateNaissance')?.touched) {
-          <p class="text-xs text-red-500 font-medium mt-1">⚠️ La date de naissance est obligatoire.</p>
-        }
-      </div>
-
-      <!-- Champ Téléphone -->
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Téléphone</label>
-        <input formControlName="telephone" type="text" placeholder="+224622000000" class="w-full bg-slate-50 border p-3.5 text-sm rounded-xl focus:outline-none">
-        @if (clientForm.get('telephone')?.invalid && clientForm.get('telephone')?.touched) {
-          <p class="text-xs text-red-500 font-medium mt-1">⚠️ Format de téléphone invalide (8 à 15 chiffres requis).</p>
-        }
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-      <!-- Champ Email -->
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Email</label>
-        <input formControlName="email" type="email" class="w-full bg-slate-50 border p-3.5 text-sm rounded-xl focus:outline-none">
-        @if (clientForm.get('email')?.invalid && clientForm.get('email')?.touched) {
-          <p class="text-xs text-red-500 font-medium mt-1">⚠️ Veuillez saisir une adresse email valide.</p>
-        }
-      </div>
-      <!-- Champ Adresse -->
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Adresse (Optionnelle)</label>
-        <input formControlName="adresse" type="text" class="w-full bg-slate-50 border p-3.5 text-sm rounded-xl focus:outline-none">
-      </div>
+    <!-- 🏢 SECTION 1 : GESTION D’IDENTITÉ EXPÉDITEUR -->
+    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-4">
+      <h3 class="text-base font-bold text-deba-steel border-b pb-2">👤 Informations de l'expéditeur</h3>
       
+      <!-- Sélecteur d'options permuté -->
+      <div class="flex gap-4 bg-slate-50 p-2 rounded-xl w-fit">
+        <label class="px-4 py-2 text-xs font-bold rounded-lg cursor-pointer transition-all" [class.bg-deba-dark]="fretForm.get('modeClient')?.value === 'NOUVEAU'" [class.text-white]="fretForm.get('modeClient')?.value === 'NOUVEAU'">
+          <input type="radio" formControlName="modeClient" value="NOUVEAU" class="hidden"> Nouvel Expéditeur
+        </label>
+        <label class="px-4 py-2 text-xs font-bold rounded-lg cursor-pointer transition-all" [class.bg-deba-dark]="fretForm.get('modeClient')?.value === 'EXISTANT'" [class.text-white]="fretForm.get('modeClient')?.value === 'EXISTANT'">
+          <input type="radio" formControlName="modeClient" value="EXISTANT" class="hidden"> Expéditeur déjà enregistré
+        </label>
+      </div>
+
+      <!-- Option : Formulaire Nouveau Client Élite (Ajusté en premier) -->
+      @if (fretForm.get('modeClient')?.value === 'NOUVEAU') {
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in">
+          
+          <div>
+            <label class="block text-xs font-bold text-slate-500 mb-1">Prénom <span class="text-red-500">*</span></label>
+            <input type="text" formControlName="prenom" placeholder="Prénom de l'expéditeur" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
+            @if (fretForm.get('prenom')?.invalid && fretForm.get('prenom')?.touched) {
+              <p class="text-xs text-red-500 font-medium mt-1">⚠️ Le prénom est requis (2 caractères min).</p>
+            }
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-500 mb-1">Nom <span class="text-red-500">*</span></label>
+            <input type="text" formControlName="nom" placeholder="Nom de famille" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
+            @if (fretForm.get('nom')?.invalid && fretForm.get('nom')?.touched) {
+              <p class="text-xs text-red-500 font-medium mt-1">⚠️ Le nom est requis (2 caractères min).</p>
+            }
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-500 mb-1">Adresse Email <span class="text-red-500">*</span></label>
+            <input type="email" formControlName="email" placeholder="adresse@email.com" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
+            @if (fretForm.get('email')?.invalid && fretForm.get('email')?.touched) {
+              <p class="text-xs text-red-500 font-medium mt-1">⚠️ Une adresse email valide est obligatoire.</p>
+            }
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-500 mb-1">Téléphone <span class="text-red-500">*</span></label>
+            <input type="text" formControlName="telephone" placeholder="Ex: +14622000000" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
+            @if (fretForm.get('telephone')?.invalid && fretForm.get('telephone')?.touched) {
+              <p class="text-xs text-red-500 font-medium mt-1">⚠️ Numéro international invalide (8 à 15 chiffres).</p>
+            }
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-400 mb-1">Date de naissance <span class="text-slate-400 font-normal">(Optionnelle)</span></label>
+            <input type="date" formControlName="dateNaissance" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-400 mb-1">Adresse résidentielle <span class="text-slate-400 font-normal">(Optionnelle)</span></label>
+            <input type="text" formControlName="adresse" placeholder="Ville, Quartier" class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
+          </div>
+
+        </div>
+      }
+
+      <!-- Option : Recherche Client Existant -->
+      @if (fretForm.get('modeClient')?.value === 'EXISTANT') {
+        <div class="flex gap-3 max-w-md items-end">
+          <div class="flex-1">
+            <label class="block text-xs font-bold text-slate-500 mb-1">Numéro Client (Matricule)</label>
+            <input type="text" formControlName="numeroClientSaisi" placeholder="Ex: CLI-1718223..." class="w-full bg-slate-50 border border-slate-200 p-3 text-sm rounded-xl focus:outline-none text-deba-dark font-mono font-bold">
+          </div>
+          <button type="button" (click)="rechercherClientExistant()" class="bg-deba-steel text-white text-xs font-bold h-11 px-4 rounded-xl shadow-xs cursor-pointer">🔍 Vérifier l'identité</button>
+        </div>
+        @if (clientDetecte()) {
+          <div class="p-4 bg-green-50 border border-green-200 rounded-xl text-xs font-medium text-green-800 flex justify-between items-center">
+            <p>✅ Expéditeur authentifié : <strong>{{ clientDetecte().prenom }} {{ clientDetecte().nom }}</strong> ({{ clientDetecte().telephone }})</p>
+          </div>
+        }
+      }
     </div>
 
-    <button type="submit" [disabled]="clientForm.invalid || isLoading()" class="w-full bg-deba-dark disabled:opacity-40 text-white font-bold py-4 rounded-xl shadow-md cursor-pointer">
-      👤 Enregistrer le Client
+    <!-- Alertes et Routage des Doublons Détectés -->
+    @if (erreurMessage()) {
+      <div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-xl text-red-700 text-sm font-medium flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+        <p>{{ erreurMessage() }}</p>
+        @if (fretForm.get('modeClient')?.value === 'NOUVEAU' && clientDetecte()) {
+          <!-- 💡 CORRECTION : On envoie la valeur actuelle du signal clientDetecte() directement au clic -->
+          <button type="button" (click)="forcerSelectionDoublon(clientDetecte())" class="bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shrink-0 cursor-pointer hover:bg-red-700 transition-all">
+            Utiliser ce profil trouvé
+          </button>
+        }
+      </div>
+    }
+
+    @if (succesMessage()) { <div class="p-4 bg-green-50 text-green-700 font-medium rounded-xl text-sm">✅ {{ succesMessage() }}</div> }
+
+    <!-- 📦 SECTION 2 : CONTENU DE LA CARGAISON -->
+    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-4">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="text-base font-bold text-deba-steel">📦 Contenu du colis</h3>
+        <button type="button" (click)="ajouterUnColis()" class="text-xs bg-slate-100 hover:bg-slate-200 text-deba-dark px-3 py-1.5 rounded-xl font-bold cursor-pointer">➕ Ajouter un autre colis</button>
+      </div>
+
+      <div formArrayName="colisList" class="space-y-4 divide-y divide-slate-100">
+        @for (colis of listeDesColis.controls; track $index; let idx = $index) {
+          <div [formGroupName]="idx" class="pt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 items-start relative animate-fade-in">
+            
+            <div>
+              <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Type de colis<span class="text-red-500">*</span></label>
+              <select formControlName="sousCategorieId" class="w-full bg-slate-50 border p-2.5 text-xs rounded-xl focus:outline-none font-bold text-deba-dark">
+                <option value="">Sélectionner</option>
+                @for (cat of categories(); track cat.id) {
+                  <optgroup [label]="cat.nom">
+                    @for (sub of cat.sousCategories; track sub.id) {
+                      <option value="{{ sub.id }}">{{ sub.nom }}</option>
+                    }
+                  </optgroup>
+                }
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Quantité (Poids/Pièce)<span class="text-red-500">*</span></label>
+              <input type="number" formControlName="quantite" placeholder="Ex: 5" class="w-full bg-slate-50 border p-2.5 text-xs rounded-xl focus:outline-none text-deba-dark font-bold">
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Adresse de destination<span class="text-red-500">*</span></label>
+              <input type="text" formControlName="destination" placeholder="Ville, Quartier" class="w-full bg-slate-50 border p-2.5 text-xs rounded-xl focus:outline-none text-deba-dark font-medium">
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Acompte versé (€)<span class="text-slate-400 font-normal">(Optionnel)</span></label>
+              <input type="number" formControlName="avance" placeholder="0" class="w-full bg-slate-50 border p-2.5 text-xs rounded-xl focus:outline-none text-deba-dark font-mono">
+            </div>
+
+            <div class="flex gap-2 items-end">
+              <div class="flex-1">
+                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Description <span class="text-slate-400 font-normal">(Optionnelle)</span></label>
+                <input type="text" formControlName="description" placeholder="Notes..." class="w-full bg-slate-50 border p-2.5 text-xs rounded-xl focus:outline-none text-deba-dark">
+              </div>
+              @if (listeDesColis.length > 1) {
+                <button type="button" (click)="retirerUnColis(idx)" class="bg-red-50 text-red-500 hover:bg-red-100 p-2.5 rounded-xl font-bold cursor-pointer text-xs h-10">✕</button>
+              }
+            </div>
+
+          </div>
+        }
+      </div>
+    </div>
+
+ <!-- Bouton Soumission Global -->
+    <button type="submit" [disabled]="fretForm.invalid || isLoading()" class="w-full bg-deba-dark text-white font-black py-4 rounded-2xl shadow-md cursor-pointer disabled:opacity-40">
+      @if (isLoading()) { 🚀 Enregistrement de l'envoi en cours... } @else { 🚀 Valider l'expédition groupée et émettre les factures }
     </button>
+
   </form>
 </div>

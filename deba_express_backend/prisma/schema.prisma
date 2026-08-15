@@ -67,8 +67,8 @@ model Client {
   prenom          String
   email           String   @unique
   telephone       String
-  adresse         String
-  dateNaissance   DateTime
+  adresse         String?
+  dateNaissance   DateTime?
   
   colis           Colis[]  @relation("ClientExpediteur")
   utilisateur     Utilisateur?
@@ -86,6 +86,7 @@ model Colis {
   
   quantite        Float              
   prixTotal       Float
+  destination     String
   dateDepot       DateTime
   dateEnvoi       DateTime
   dateReception   DateTime             

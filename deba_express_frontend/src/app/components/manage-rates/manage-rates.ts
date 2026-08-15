@@ -1,11 +1,11 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-manage-rates',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FormsModule],
   templateUrl: './manage-rates.html',
   styleUrl: './manage-rates.css'
 })
@@ -14,18 +14,41 @@ export class ManageRatesComponent implements OnInit {
   private fb = inject(FormBuilder);
 
   categories = signal<any[]>([]);
-  
+  recherche = signal<string>('');
+  critereTri = signal<string>('nom');
+  ordreTri = signal<string>('asc');
+  pageActuelle = signal<number>(1);
+  elementsParPage = 4;
+
   catForm!: FormGroup;
   subForm!: FormGroup;
   editCatForm!: FormGroup;
   editSubForm!: FormGroup;
 
-  // Signaux pour le contrôle d'ouverture des modales de modification
   modalCatSelectionnee = signal<any | null>(null);
   modalSubSelectionnee = signal<any | null>(null);
 
+  // Signaux d'alertes et confirmations d'action
   erreurMessage = signal<string | null>(null);
   succesMessage = signal<string | null>(null);
+
+  categoriesFiltrees = computed(() => {
+    let resultat = [...this.categories()];
+    const terme = this.recherche().toLowerCase().trim();
+    if (terme) {
+      resultat = resultat.filter(cat => 
+        cat.nom.toLowerCase().includes(terme) || 
+        cat.sousCategories?.some((sub: any) => sub.nom.toLowerCase().includes(terme))
+      );
+    }
+    return resultat;
+  });
+
+  pagesTotales = computed(() => Math.ceil(this.categoriesFiltrees().length / this.elementsParPage) || 1);
+  categoriesPage = computed(() => {
+    const debut = (this.pageActuelle() - 1) * this.elementsParPage;
+    return this.categoriesFiltrees().slice(debut, debut + this.elementsParPage);
+  });
 
   ngOnInit() {
     this.chargerNomenclature();
@@ -34,66 +57,78 @@ export class ManageRatesComponent implements OnInit {
 
   initFormulaires() {
     this.catForm = this.fb.group({
-      nom: ['', Validators.required],
+      nom: ['', [Validators.required, Validators.minLength(2)]],
       description: [''],
       prixUnitaire: ['', [Validators.required, Validators.min(0)]],
       mesure: ['POIDS', Validators.required]
     });
 
     this.subForm = this.fb.group({
-      nom: ['', Validators.required],
-      prixUnitaire: [''], // Optionnel (null = héritage)
-      mesure: ['']        // Optionnel (null = héritage)
+      nom: ['', [Validators.required, Validators.minLength(2)]],
+      prixUnitaire: ['', [Validators.min(0)]], 
+      mesure: ['']        
     });
 
     this.editCatForm = this.fb.group({
       id: [''],
-      nom: ['', Validators.required],
+      nom: ['', [Validators.required, Validators.minLength(2)]],
       description: [''],
       prixUnitaire: ['', [Validators.required, Validators.min(0)]],
-      mesure: ['X', Validators.required]
+      mesure: ['', Validators.required]
     });
 
     this.editSubForm = this.fb.group({
       id: [''],
-      nom: ['', Validators.required],
-      prixUnitaire: [''],
+      nom: ['', [Validators.required, Validators.minLength(2)]],
+      prixUnitaire: ['', [Validators.min(0)]],
       mesure: ['']
     });
   }
 
+  nettoyerMessages() {
+    this.erreurMessage.set(null);
+    this.succesMessage.set(null);
+  }
+
   chargerNomenclature() {
-    this.http.get<any[]>('http://localhost:3000/api/categories').subscribe({
-      next: (data) => this.categories.set(data),
-      error: () => this.erreurMessage.set('Erreur lors du chargement de la grille tarifaire.')
-    });
+    this.http.get<any[]>('http://localhost:3000/api/categories').subscribe(data => this.categories.set(data));
   }
 
   creerCategorie() {
-    if (this.catForm.invalid) return;
+    this.nettoyerMessages();
+    if (this.catForm.invalid) {
+      this.catForm.markAllAsTouched();
+      return;
+    }
     this.http.post('http://localhost:3000/api/categories', this.catForm.value).subscribe({
-      next: () => {
+      next: (res: any) => {
         this.chargerNomenclature();
+        this.succesMessage.set(`La catégorie racine "${res.nom}" a été créée avec succès !`);
         this.catForm.reset({ mesure: 'POIDS' });
-        this.succesMessage.set('Catégorie racine ajoutée.');
       },
       error: (err) => this.erreurMessage.set(err.error?.error || 'Échec de la création.')
     });
   }
 
   creerSousCategorie(catId: string) {
-    if (this.subForm.invalid) return;
+    this.nettoyerMessages();
+    if (this.subForm.invalid) {
+      this.subForm.markAllAsTouched();
+      return;
+    }
     const payload = { ...this.subForm.value, categorieId: catId };
     this.http.post('http://localhost:3000/api/sous-categories', payload).subscribe({
-      next: () => {
+      next: (res: any) => {
         this.chargerNomenclature();
-        this.subForm.reset({ examen: '', mesure: '' });
+        this.succesMessage.set(`La sous-catégorie "${res.nom}" a été ajoutée.`);
+        this.subForm.reset({ mesure: '' });
       },
-      error: (err) => alert(err.error?.error)
+      error: (err) => this.erreurMessage.set(err.error?.error || 'Échec de l\'ajout.')
     });
   }
 
   ouvrirModaleCat(cat: any) {
+    this.nettoyerMessages();
     this.modalCatSelectionnee.set(cat);
     this.editCatForm.patchValue({
       id: cat.id,
@@ -102,20 +137,27 @@ export class ManageRatesComponent implements OnInit {
       prixUnitaire: cat.prixUnitaire,
       mesure: cat.mesure
     });
+    this.editCatForm.enable();
   }
 
   sauvegarderCategorie() {
-    if (this.editCatForm.invalid) return;
+    if (this.editCatForm.invalid) {
+      this.editCatForm.markAllAsTouched();
+      return;
+    }
     const id = this.editCatForm.value.id;
     this.http.put(`http://localhost:3000/api/categories/${id}`, this.editCatForm.value).subscribe({
-      next: () => {
+      next: (res: any) => {
         this.chargerNomenclature();
         this.modalCatSelectionnee.set(null);
-      }
+        this.succesMessage.set(`La catégorie "${res.nom}" a été modifiée.`);
+      },
+      error: (err) => alert(err.error?.error || 'Erreur lors de la modification.')
     });
   }
 
   ouvrirModaleSub(sub: any) {
+    this.nettoyerMessages();
     this.modalSubSelectionnee.set(sub);
     this.editSubForm.patchValue({
       id: sub.id,
@@ -123,28 +165,75 @@ export class ManageRatesComponent implements OnInit {
       prixUnitaire: sub.prixUnitaire === null ? '' : sub.prixUnitaire,
       mesure: sub.mesure === null ? '' : sub.mesure
     });
+    this.editSubForm.enable();
   }
 
   sauvegarderSousCategorie() {
-    if (this.editSubForm.invalid) return;
+    if (this.editSubForm.invalid) {
+      this.editSubForm.markAllAsTouched();
+      return;
+    }
     const id = this.editSubForm.value.id;
     this.http.put(`http://localhost:3000/api/sous-categories/${id}`, this.editSubForm.value).subscribe({
-      next: () => {
+      next: (res: any) => {
         this.chargerNomenclature();
         this.modalSubSelectionnee.set(null);
-      }
+        this.succesMessage.set(`La sous-catégorie "${res.nom}" a été modifiée.`);
+      },
+      error: (err) => alert(err.error?.error || 'Erreur lors de la modification.')
     });
   }
 
-  supprimerCat(id: string) {
-    if (confirm('🚨 Supprimer cette catégorie et toutes ses sous-catégories ?')) {
-      this.http.delete(`http://localhost:3000/api/categories/${id}`).subscribe(() => this.chargerNomenclature());
-    }
+    supprimerCat(id: string) {
+    this.nettoyerMessages();
+    if (!confirm('🚨 Supprimer cette catégorie et toutes ses sous-catégories ?')) return;
+
+    this.http.delete<any>(`http://localhost:3000/api/categories/${id}`).subscribe({
+      next: (res) => {
+        if (res.success === false) {
+          // Si le backend a bloqué l'action de sécurité
+          this.erreurMessage.set(res.error);
+        } else {
+          // Si la suppression a été validée physiquement en base
+          this.chargerNomenclature();
+          this.succesMessage.set(res.message);
+        }
+      },
+      error: () => this.erreurMessage.set('Une erreur réseau est survenue.')
+    });
   }
 
   supprimerSub(id: string) {
-    if (confirm('Supprimer cette sous-catégorie tarifaire ?')) {
-      this.http.delete(`http://localhost:3000/api/sous-categories/${id}`).subscribe(() => this.chargerNomenclature());
+    this.nettoyerMessages();
+    if (!confirm('Supprimer cette sous-catégorie tarifaire ?')) return;
+
+    this.http.delete<any>(`http://localhost:3000/api/sous-categories/${id}`).subscribe({
+      next: (res) => {
+        if (res.success === false) {
+          // Si le backend a bloqué l'action de sécurité
+          this.erreurMessage.set(res.error);
+        } else {
+          // Si la suppression a été validée physiquement en base
+          this.chargerNomenclature();
+          this.succesMessage.set(res.message);
+        }
+      },
+      error: () => this.erreurMessage.set('Une erreur réseau est survenue.')
+    });
+  }
+
+
+  toggleOrdre() {
+    this.ordreTri.set(this.ordreTri() === 'asc' ? 'desc' : 'asc');
+  }
+
+  changerPage(nouvellePage: number) {
+    if (nouvellePage >= 1 && nouvellePage <= this.pagesTotales()) {
+      this.pageActuelle.set(nouvellePage);
     }
+  }
+
+  mathMin(a: number, b: number): number {
+    return Math.min(a, b);
   }
 }

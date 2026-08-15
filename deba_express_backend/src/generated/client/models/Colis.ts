@@ -46,6 +46,7 @@ export type ColisMinAggregateOutputType = {
   mesureApp: $Enums.TypeMesure | null
   quantite: number | null
   prixTotal: number | null
+  destination: string | null
   dateDepot: Date | null
   dateEnvoi: Date | null
   dateReception: Date | null
@@ -65,6 +66,7 @@ export type ColisMaxAggregateOutputType = {
   mesureApp: $Enums.TypeMesure | null
   quantite: number | null
   prixTotal: number | null
+  destination: string | null
   dateDepot: Date | null
   dateEnvoi: Date | null
   dateReception: Date | null
@@ -84,6 +86,7 @@ export type ColisCountAggregateOutputType = {
   mesureApp: number
   quantite: number
   prixTotal: number
+  destination: number
   dateDepot: number
   dateEnvoi: number
   dateReception: number
@@ -117,6 +120,7 @@ export type ColisMinAggregateInputType = {
   mesureApp?: true
   quantite?: true
   prixTotal?: true
+  destination?: true
   dateDepot?: true
   dateEnvoi?: true
   dateReception?: true
@@ -136,6 +140,7 @@ export type ColisMaxAggregateInputType = {
   mesureApp?: true
   quantite?: true
   prixTotal?: true
+  destination?: true
   dateDepot?: true
   dateEnvoi?: true
   dateReception?: true
@@ -155,6 +160,7 @@ export type ColisCountAggregateInputType = {
   mesureApp?: true
   quantite?: true
   prixTotal?: true
+  destination?: true
   dateDepot?: true
   dateEnvoi?: true
   dateReception?: true
@@ -261,6 +267,7 @@ export type ColisGroupByOutputType = {
   mesureApp: $Enums.TypeMesure
   quantite: number
   prixTotal: number
+  destination: string
   dateDepot: Date
   dateEnvoi: Date
   dateReception: Date
@@ -303,6 +310,7 @@ export type ColisWhereInput = {
   mesureApp?: Prisma.EnumTypeMesureFilter<"Colis"> | $Enums.TypeMesure
   quantite?: Prisma.FloatFilter<"Colis"> | number
   prixTotal?: Prisma.FloatFilter<"Colis"> | number
+  destination?: Prisma.StringFilter<"Colis"> | string
   dateDepot?: Prisma.DateTimeFilter<"Colis"> | Date | string
   dateEnvoi?: Prisma.DateTimeFilter<"Colis"> | Date | string
   dateReception?: Prisma.DateTimeFilter<"Colis"> | Date | string
@@ -325,6 +333,7 @@ export type ColisOrderByWithRelationInput = {
   mesureApp?: Prisma.SortOrder
   quantite?: Prisma.SortOrder
   prixTotal?: Prisma.SortOrder
+  destination?: Prisma.SortOrder
   dateDepot?: Prisma.SortOrder
   dateEnvoi?: Prisma.SortOrder
   dateReception?: Prisma.SortOrder
@@ -350,6 +359,7 @@ export type ColisWhereUniqueInput = Prisma.AtLeast<{
   mesureApp?: Prisma.EnumTypeMesureFilter<"Colis"> | $Enums.TypeMesure
   quantite?: Prisma.FloatFilter<"Colis"> | number
   prixTotal?: Prisma.FloatFilter<"Colis"> | number
+  destination?: Prisma.StringFilter<"Colis"> | string
   dateDepot?: Prisma.DateTimeFilter<"Colis"> | Date | string
   dateEnvoi?: Prisma.DateTimeFilter<"Colis"> | Date | string
   dateReception?: Prisma.DateTimeFilter<"Colis"> | Date | string
@@ -372,6 +382,7 @@ export type ColisOrderByWithAggregationInput = {
   mesureApp?: Prisma.SortOrder
   quantite?: Prisma.SortOrder
   prixTotal?: Prisma.SortOrder
+  destination?: Prisma.SortOrder
   dateDepot?: Prisma.SortOrder
   dateEnvoi?: Prisma.SortOrder
   dateReception?: Prisma.SortOrder
@@ -399,6 +410,7 @@ export type ColisScalarWhereWithAggregatesInput = {
   mesureApp?: Prisma.EnumTypeMesureWithAggregatesFilter<"Colis"> | $Enums.TypeMesure
   quantite?: Prisma.FloatWithAggregatesFilter<"Colis"> | number
   prixTotal?: Prisma.FloatWithAggregatesFilter<"Colis"> | number
+  destination?: Prisma.StringWithAggregatesFilter<"Colis"> | string
   dateDepot?: Prisma.DateTimeWithAggregatesFilter<"Colis"> | Date | string
   dateEnvoi?: Prisma.DateTimeWithAggregatesFilter<"Colis"> | Date | string
   dateReception?: Prisma.DateTimeWithAggregatesFilter<"Colis"> | Date | string
@@ -418,6 +430,7 @@ export type ColisCreateInput = {
   mesureApp: $Enums.TypeMesure
   quantite: number
   prixTotal: number
+  destination: string
   dateDepot: Date | string
   dateEnvoi: Date | string
   dateReception: Date | string
@@ -438,6 +451,7 @@ export type ColisUncheckedCreateInput = {
   mesureApp: $Enums.TypeMesure
   quantite: number
   prixTotal: number
+  destination: string
   dateDepot: Date | string
   dateEnvoi: Date | string
   dateReception: Date | string
@@ -458,6 +472,7 @@ export type ColisUpdateInput = {
   mesureApp?: Prisma.EnumTypeMesureFieldUpdateOperationsInput | $Enums.TypeMesure
   quantite?: Prisma.FloatFieldUpdateOperationsInput | number
   prixTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  destination?: Prisma.StringFieldUpdateOperationsInput | string
   dateDepot?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateEnvoi?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateReception?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -478,6 +493,7 @@ export type ColisUncheckedUpdateInput = {
   mesureApp?: Prisma.EnumTypeMesureFieldUpdateOperationsInput | $Enums.TypeMesure
   quantite?: Prisma.FloatFieldUpdateOperationsInput | number
   prixTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  destination?: Prisma.StringFieldUpdateOperationsInput | string
   dateDepot?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateEnvoi?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateReception?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -498,6 +514,7 @@ export type ColisCreateManyInput = {
   mesureApp: $Enums.TypeMesure
   quantite: number
   prixTotal: number
+  destination: string
   dateDepot: Date | string
   dateEnvoi: Date | string
   dateReception: Date | string
@@ -517,6 +534,7 @@ export type ColisUpdateManyMutationInput = {
   mesureApp?: Prisma.EnumTypeMesureFieldUpdateOperationsInput | $Enums.TypeMesure
   quantite?: Prisma.FloatFieldUpdateOperationsInput | number
   prixTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  destination?: Prisma.StringFieldUpdateOperationsInput | string
   dateDepot?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateEnvoi?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateReception?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -534,6 +552,7 @@ export type ColisUncheckedUpdateManyInput = {
   mesureApp?: Prisma.EnumTypeMesureFieldUpdateOperationsInput | $Enums.TypeMesure
   quantite?: Prisma.FloatFieldUpdateOperationsInput | number
   prixTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  destination?: Prisma.StringFieldUpdateOperationsInput | string
   dateDepot?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateEnvoi?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateReception?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -563,6 +582,7 @@ export type ColisCountOrderByAggregateInput = {
   mesureApp?: Prisma.SortOrder
   quantite?: Prisma.SortOrder
   prixTotal?: Prisma.SortOrder
+  destination?: Prisma.SortOrder
   dateDepot?: Prisma.SortOrder
   dateEnvoi?: Prisma.SortOrder
   dateReception?: Prisma.SortOrder
@@ -588,6 +608,7 @@ export type ColisMaxOrderByAggregateInput = {
   mesureApp?: Prisma.SortOrder
   quantite?: Prisma.SortOrder
   prixTotal?: Prisma.SortOrder
+  destination?: Prisma.SortOrder
   dateDepot?: Prisma.SortOrder
   dateEnvoi?: Prisma.SortOrder
   dateReception?: Prisma.SortOrder
@@ -607,6 +628,7 @@ export type ColisMinOrderByAggregateInput = {
   mesureApp?: Prisma.SortOrder
   quantite?: Prisma.SortOrder
   prixTotal?: Prisma.SortOrder
+  destination?: Prisma.SortOrder
   dateDepot?: Prisma.SortOrder
   dateEnvoi?: Prisma.SortOrder
   dateReception?: Prisma.SortOrder
@@ -739,6 +761,7 @@ export type ColisCreateWithoutSousCategorieInput = {
   mesureApp: $Enums.TypeMesure
   quantite: number
   prixTotal: number
+  destination: string
   dateDepot: Date | string
   dateEnvoi: Date | string
   dateReception: Date | string
@@ -758,6 +781,7 @@ export type ColisUncheckedCreateWithoutSousCategorieInput = {
   mesureApp: $Enums.TypeMesure
   quantite: number
   prixTotal: number
+  destination: string
   dateDepot: Date | string
   dateEnvoi: Date | string
   dateReception: Date | string
@@ -806,6 +830,7 @@ export type ColisScalarWhereInput = {
   mesureApp?: Prisma.EnumTypeMesureFilter<"Colis"> | $Enums.TypeMesure
   quantite?: Prisma.FloatFilter<"Colis"> | number
   prixTotal?: Prisma.FloatFilter<"Colis"> | number
+  destination?: Prisma.StringFilter<"Colis"> | string
   dateDepot?: Prisma.DateTimeFilter<"Colis"> | Date | string
   dateEnvoi?: Prisma.DateTimeFilter<"Colis"> | Date | string
   dateReception?: Prisma.DateTimeFilter<"Colis"> | Date | string
@@ -825,6 +850,7 @@ export type ColisCreateWithoutExpediteurInput = {
   mesureApp: $Enums.TypeMesure
   quantite: number
   prixTotal: number
+  destination: string
   dateDepot: Date | string
   dateEnvoi: Date | string
   dateReception: Date | string
@@ -844,6 +870,7 @@ export type ColisUncheckedCreateWithoutExpediteurInput = {
   mesureApp: $Enums.TypeMesure
   quantite: number
   prixTotal: number
+  destination: string
   dateDepot: Date | string
   dateEnvoi: Date | string
   dateReception: Date | string
@@ -889,6 +916,7 @@ export type ColisCreateWithoutFactureInput = {
   mesureApp: $Enums.TypeMesure
   quantite: number
   prixTotal: number
+  destination: string
   dateDepot: Date | string
   dateEnvoi: Date | string
   dateReception: Date | string
@@ -908,6 +936,7 @@ export type ColisUncheckedCreateWithoutFactureInput = {
   mesureApp: $Enums.TypeMesure
   quantite: number
   prixTotal: number
+  destination: string
   dateDepot: Date | string
   dateEnvoi: Date | string
   dateReception: Date | string
@@ -943,6 +972,7 @@ export type ColisUpdateWithoutFactureInput = {
   mesureApp?: Prisma.EnumTypeMesureFieldUpdateOperationsInput | $Enums.TypeMesure
   quantite?: Prisma.FloatFieldUpdateOperationsInput | number
   prixTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  destination?: Prisma.StringFieldUpdateOperationsInput | string
   dateDepot?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateEnvoi?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateReception?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -962,6 +992,7 @@ export type ColisUncheckedUpdateWithoutFactureInput = {
   mesureApp?: Prisma.EnumTypeMesureFieldUpdateOperationsInput | $Enums.TypeMesure
   quantite?: Prisma.FloatFieldUpdateOperationsInput | number
   prixTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  destination?: Prisma.StringFieldUpdateOperationsInput | string
   dateDepot?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateEnvoi?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateReception?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -981,6 +1012,7 @@ export type ColisCreateManySousCategorieInput = {
   mesureApp: $Enums.TypeMesure
   quantite: number
   prixTotal: number
+  destination: string
   dateDepot: Date | string
   dateEnvoi: Date | string
   dateReception: Date | string
@@ -999,6 +1031,7 @@ export type ColisUpdateWithoutSousCategorieInput = {
   mesureApp?: Prisma.EnumTypeMesureFieldUpdateOperationsInput | $Enums.TypeMesure
   quantite?: Prisma.FloatFieldUpdateOperationsInput | number
   prixTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  destination?: Prisma.StringFieldUpdateOperationsInput | string
   dateDepot?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateEnvoi?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateReception?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1018,6 +1051,7 @@ export type ColisUncheckedUpdateWithoutSousCategorieInput = {
   mesureApp?: Prisma.EnumTypeMesureFieldUpdateOperationsInput | $Enums.TypeMesure
   quantite?: Prisma.FloatFieldUpdateOperationsInput | number
   prixTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  destination?: Prisma.StringFieldUpdateOperationsInput | string
   dateDepot?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateEnvoi?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateReception?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1037,6 +1071,7 @@ export type ColisUncheckedUpdateManyWithoutSousCategorieInput = {
   mesureApp?: Prisma.EnumTypeMesureFieldUpdateOperationsInput | $Enums.TypeMesure
   quantite?: Prisma.FloatFieldUpdateOperationsInput | number
   prixTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  destination?: Prisma.StringFieldUpdateOperationsInput | string
   dateDepot?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateEnvoi?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateReception?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1055,6 +1090,7 @@ export type ColisCreateManyExpediteurInput = {
   mesureApp: $Enums.TypeMesure
   quantite: number
   prixTotal: number
+  destination: string
   dateDepot: Date | string
   dateEnvoi: Date | string
   dateReception: Date | string
@@ -1073,6 +1109,7 @@ export type ColisUpdateWithoutExpediteurInput = {
   mesureApp?: Prisma.EnumTypeMesureFieldUpdateOperationsInput | $Enums.TypeMesure
   quantite?: Prisma.FloatFieldUpdateOperationsInput | number
   prixTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  destination?: Prisma.StringFieldUpdateOperationsInput | string
   dateDepot?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateEnvoi?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateReception?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1092,6 +1129,7 @@ export type ColisUncheckedUpdateWithoutExpediteurInput = {
   mesureApp?: Prisma.EnumTypeMesureFieldUpdateOperationsInput | $Enums.TypeMesure
   quantite?: Prisma.FloatFieldUpdateOperationsInput | number
   prixTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  destination?: Prisma.StringFieldUpdateOperationsInput | string
   dateDepot?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateEnvoi?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateReception?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1111,6 +1149,7 @@ export type ColisUncheckedUpdateManyWithoutExpediteurInput = {
   mesureApp?: Prisma.EnumTypeMesureFieldUpdateOperationsInput | $Enums.TypeMesure
   quantite?: Prisma.FloatFieldUpdateOperationsInput | number
   prixTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  destination?: Prisma.StringFieldUpdateOperationsInput | string
   dateDepot?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateEnvoi?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dateReception?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1131,6 +1170,7 @@ export type ColisSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   mesureApp?: boolean
   quantite?: boolean
   prixTotal?: boolean
+  destination?: boolean
   dateDepot?: boolean
   dateEnvoi?: boolean
   dateReception?: boolean
@@ -1153,6 +1193,7 @@ export type ColisSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   mesureApp?: boolean
   quantite?: boolean
   prixTotal?: boolean
+  destination?: boolean
   dateDepot?: boolean
   dateEnvoi?: boolean
   dateReception?: boolean
@@ -1174,6 +1215,7 @@ export type ColisSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   mesureApp?: boolean
   quantite?: boolean
   prixTotal?: boolean
+  destination?: boolean
   dateDepot?: boolean
   dateEnvoi?: boolean
   dateReception?: boolean
@@ -1195,6 +1237,7 @@ export type ColisSelectScalar = {
   mesureApp?: boolean
   quantite?: boolean
   prixTotal?: boolean
+  destination?: boolean
   dateDepot?: boolean
   dateEnvoi?: boolean
   dateReception?: boolean
@@ -1206,7 +1249,7 @@ export type ColisSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ColisOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "codeSuivi" | "description" | "prixUnitaireApp" | "mesureApp" | "quantite" | "prixTotal" | "dateDepot" | "dateEnvoi" | "dateReception" | "etatSortie" | "statut" | "sousCategorieId" | "expediteurId" | "createdAt" | "updatedAt", ExtArgs["result"]["colis"]>
+export type ColisOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "codeSuivi" | "description" | "prixUnitaireApp" | "mesureApp" | "quantite" | "prixTotal" | "destination" | "dateDepot" | "dateEnvoi" | "dateReception" | "etatSortie" | "statut" | "sousCategorieId" | "expediteurId" | "createdAt" | "updatedAt", ExtArgs["result"]["colis"]>
 export type ColisInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sousCategorie?: boolean | Prisma.SousCategorieColisDefaultArgs<ExtArgs>
   expediteur?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
@@ -1236,6 +1279,7 @@ export type $ColisPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     mesureApp: $Enums.TypeMesure
     quantite: number
     prixTotal: number
+    destination: string
     dateDepot: Date
     dateEnvoi: Date
     dateReception: Date
@@ -1678,6 +1722,7 @@ export interface ColisFieldRefs {
   readonly mesureApp: Prisma.FieldRef<"Colis", 'TypeMesure'>
   readonly quantite: Prisma.FieldRef<"Colis", 'Float'>
   readonly prixTotal: Prisma.FieldRef<"Colis", 'Float'>
+  readonly destination: Prisma.FieldRef<"Colis", 'String'>
   readonly dateDepot: Prisma.FieldRef<"Colis", 'DateTime'>
   readonly dateEnvoi: Prisma.FieldRef<"Colis", 'DateTime'>
   readonly dateReception: Prisma.FieldRef<"Colis", 'DateTime'>

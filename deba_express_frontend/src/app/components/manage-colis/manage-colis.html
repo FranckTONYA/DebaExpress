@@ -1,0 +1,124 @@
+<div class="space-y-6">
+  <header>
+    <h2 class="text-2xl font-extrabold text-deba-dark">Inventaire Global du Fret</h2>
+    <p class="text-sm text-slate-500">Supervisez, filtrez, triez et modifiez l'état d'avancement des colis enregistrés.</p>
+  </header>
+
+  <!-- BARRE DE RECHERCHE ET CONFIGURATION FILTRES -->
+  <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-wrap gap-4 items-end">
+    <div class="flex-1 min-w-[250px]">
+      <label class="block text-xs font-bold text-slate-400 mb-1">Recherche (Suivi, Client, Catégorie, Ville)</label>
+      <input type="text" [(ngModel)]="recherche" (input)="appliquerFiltres()" placeholder="Taper pour filtrer en direct..." class="w-full bg-slate-50 border border-slate-200 px-4 py-2 text-sm rounded-xl focus:outline-none text-deba-dark font-medium">
+    </div>
+    
+    <div>
+      <label class="block text-xs font-bold text-slate-400 mb-1">Trier selon</label>
+      <select [(ngModel)]="critereTri" (change)="appliquerFiltres()" class="bg-slate-50 border border-slate-200 px-4 py-2 text-sm rounded-xl focus:outline-none text-deba-dark font-semibold">
+        <option value="createdAt">🗓️ Date de dépôt</option>
+        <option value="client">👤 Nom Client</option>
+        <option value="categorie">📂 Catégorie Parent</option>
+        <option value="sousCategorie">↳ Sous-Catégorie</option>
+      </select>
+    </div>
+
+    <button (click)="toggleOrdre()" class="bg-slate-100 border p-2 text-sm rounded-xl font-bold text-deba-steel cursor-pointer h-10 px-3">
+      {{ ordreTri() === 'asc' ? '▲ Croissant' : '▼ Décroissant' }}
+    </button>
+  </div>
+
+  <!-- LE REPERTOIRE LOGISTIQUE -->
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50 border-b text-xs font-bold text-slate-500 uppercase">
+            <th class="p-4">Code Suivi</th>
+            <th class="p-4">Expéditeur</th>
+            <th class="p-4">Contenu / Grille</th>
+            <th class="p-4">Prix Total</th>
+            <th class="p-4">Statut Escale</th>
+            <th class="p-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 text-sm">
+          @for (colis of colisList(); track colis.id) {
+            <tr class="hover:bg-slate-50/70 transition-all">
+              <td class="p-4 font-mono font-black text-deba-steel">{{ colis.codeSuivi }}</td>
+              <td class="p-4 font-semibold text-deba-dark">{{ colis.expediteur?.prenom }} {{ colis.expediteur?.nom }}</td>
+              <td class="p-4">
+                <p class="font-medium text-slate-800">{{ colis.sousCategorie?.nom }} (x{{ colis.quantite }})</p>
+                <p class="text-[11px] text-slate-400">Vers {{ colis.destination }}</p>
+              </td>
+              <td class="p-4 font-mono font-bold text-slate-700">{{ colis.prixTotal }} €</td>
+              <td class="p-4">
+                <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 uppercase">{{ colis.statut }}</span>
+              </td>
+              <td class="p-4 text-right space-x-1">
+                <button (click)="ouvrirModale(colis, false)" class="text-xs bg-slate-100 px-2.5 py-1.5 rounded-lg font-medium cursor-pointer">👁️</button>
+                <button (click)="ouvrirModale(colis, true)" class="text-xs bg-blue-50 text-blue-600 px-2.5 py-1.5 rounded-lg font-medium cursor-pointer">✏️</button>
+                <button (click)="supprimerColis(colis.id)" class="text-xs bg-red-50 text-red-500 px-2.5 py-1.5 rounded-lg font-medium cursor-pointer">🗑️</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- NAVIGATION PAGINATION FLUIDE -->
+    <div class="p-4 bg-slate-50 border-t flex justify-between items-center text-xs font-bold text-slate-500">
+      <p>Total : {{ totalElements() }} colis enregistré(s)</p>
+      <div class="flex gap-2 items-center">
+        <button (click)="changerPage(pageActuelle() - 1)" [disabled]="pageActuelle() === 1" class="px-3 py-1.5 bg-white border rounded-lg disabled:opacity-40 cursor-pointer">◀ Précédent</button>
+        <span>Page {{ pageActuelle() }} sur {{ pagesTotales() }}</span>
+        <button (click)="changerPage(pageActuelle() + 1)" [disabled]="pageActuelle() === pagesTotales()" class="px-3 py-1.5 bg-white border rounded-lg disabled:opacity-40 cursor-pointer">Suivant ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE DETAILED / EDITEUR DE COLIS -->
+  @if (colisEnEdition()) {
+    <div class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-xl border space-y-4">
+        <h3 class="text-lg font-bold text-deba-dark border-b pb-2">📦 Informations de Fret</h3>
+        <form [formGroup]="editForm" (ngSubmit)="sauvegarderModif()" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-400 mb-1">Destination Vol</label>
+            <input type="text" formControlName="destination" class="w-full bg-slate-50 border p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-400 mb-1">Quantité Chargée</label>
+              <input type="number" formControlName="quantite" class="w-full bg-slate-50 border p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-400 mb-1">Statut Logistique</label>
+              <select formControlName="statut" class="w-full bg-slate-50 border p-3 text-sm rounded-xl focus:outline-none font-bold text-deba-dark">
+                <option value="ENREGISTRE">ENREGISTRE</option>
+                <option value="EN_ENTREPOT">EN_ENTREPOT</option>
+                <option value="EN_VOL">EN_VOL</option>
+                <option value="DOUANE">DOUANE</option>
+                <option value="ARRIVE_DESTINATION">ARRIVE_DESTINATION</option>
+                <option value="LIVRE">LIVRE</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-400 mb-1">Description / Notes</label>
+            <input type="text" formControlName="description" class="w-full bg-slate-50 border p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-400 mb-1">État de sortie à la livraison</label>
+            <input type="text" formControlName="etatSortie" placeholder="Ex: Carton intact, scellé conservé" class="w-full bg-slate-50 border p-3 text-sm rounded-xl focus:outline-none text-deba-dark">
+          </div>
+
+          <div class="flex justify-end gap-2 pt-2 border-t">
+            <button type="button" (click)="colisEnEdition.set(null)" class="px-4 py-2 text-xs bg-slate-100 rounded-xl font-bold cursor-pointer">Fermer</button>
+            @if (!colisEnEdition().modeLectureSeule) {
+              <button type="submit" [disabled]="editForm.invalid" class="px-4 py-2 text-xs bg-deba-dark text-white rounded-xl font-bold cursor-pointer">💾 Appliquer les modifications</button>
+            }
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

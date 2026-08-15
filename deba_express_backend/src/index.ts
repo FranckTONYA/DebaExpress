@@ -136,39 +136,79 @@ app.delete('/api/utilisateurs/:id', verifierToken, autoriserRoles(['ADMINISTRATE
 });
 
 // =========================================================================
-// 👤 SECTION GESTION DES CLIENTS
+// 👤 SECTION CLIENTS : ENREGISTREMENT & VÉRIFICATIONS D'EXISTENCE
 // =========================================================================
 
-// Inscrire un client avec sa date de naissance requise
-app.post('/api/clients', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
+// 1. Rechercher un client par son numéro unique (pour l'option "Existe déjà")
+app.get('/api/clients/recherche/:numero', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
   try {
-    const { nom, prenom, email, telephone, adresse, dateNaissance } = req.body;
-
-    if (!nom || !prenom || !email || !telephone || !dateNaissance) {
-      return res.status(400).json({ error: "Tous les champs requis doivent être renseignés." });
-    }
-
-    const numeroClient = `CLI-${Date.now()}`;
-    const nouveauClient = await prisma.client.create({
-      data: { 
-        numeroClient,
-        nom, 
-        prenom,
-        email, 
-        telephone, 
-        adresse,
-        dateNaissance: new Date(dateNaissance)
-      }
-    });
-    
-    return res.status(201).json(nouveauClient);
+    const numero = req.params.numero as string;
+    const client = await prisma.client.findUnique({ where: { numeroClient: numero } });
+    if (!client) return res.status(404).json({ error: "Aucun expéditeur trouvé avec ce numéro." });
+    return res.json(client);
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Erreur lors de la création du client." });
+    return res.status(500).json({ error: "Erreur lors de la recherche du client." });
   }
 });
 
-// Récupérer la liste des clients
+// 2. Vérifier si un client existe avant de le créer (par email ou combinaison Nom/Prénom/Téléphone)
+app.post('/api/clients/verifier-doublon', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
+  try {
+    const { nom, prenom, email, telephone } = req.body;
+
+    const doublon = await prisma.client.findFirst({
+      where: {
+        OR: [
+          { email: email },
+          { AND: [ { nom: nom }, { prenom: prenom }, { telephone: telephone } ] }
+        ]
+      }
+    });
+
+    if (doublon) {
+      return res.json({ existe: true, client: doublon });
+    }
+    return res.json({ existe: false });
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur lors de la vérification de l'expéditeur." });
+  }
+});
+
+// 3. Créer un client directement
+app.post('/api/clients', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
+  try {
+    const { nom, prenom, email, telephone, adresse, dateNaissance } = req.body;
+    
+    if (!nom || !prenom || !email || !telephone) {
+      return res.status(400).json({ error: "Les champs obligatoires (Nom, Prénom, Email, Téléphone) doivent être renseignés." });
+    }
+
+    const numeroClient = `CLI-${Date.now()}`;
+    
+    // Construction dynamique pour s'adapter aux chaînes vides envoyées par Angular
+    const clientData: any = {
+      numeroClient,
+      nom,
+      prenom,
+      email,
+      telephone,
+      adresse: adresse && adresse.trim() !== '' ? adresse : null
+    };
+
+    if (dateNaissance && dateNaissance.trim() !== '') {
+      clientData.dateNaissance = new Date(dateNaissance);
+    }
+
+    const client = await prisma.client.create({ data: clientData });
+    return res.status(201).json(client);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Échec de l'enregistrement du client." });
+  }
+});
+
+
+// 4. Récupérer la liste des clients
 app.get('/api/clients', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
   try {
     const clients = await prisma.client.findMany({
@@ -181,23 +221,38 @@ app.get('/api/clients', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIO
   }
 });
 
-// Modifier un client
+// 5. Modifier un client
 app.put('/api/clients/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
   try {
     const id = req.params.id as string;
-    const { nom, prenom, email, telephone, adresse } = req.body;
+    const { nom, prenom, email, telephone, adresse, dateNaissance } = req.body;
+    
+    const updateData: any = { 
+      nom, 
+      prenom, 
+      email, 
+      telephone, 
+      adresse: adresse && adresse.trim() !== '' ? adresse : null 
+    };
+    
+    if (dateNaissance && dateNaissance.trim() !== '') {
+      updateData.dateNaissance = new Date(dateNaissance);
+    } else {
+      updateData.dateNaissance = null;
+    }
 
-    const misAJour = await prisma.client.update({
+    const clientMisAJour = await prisma.client.update({
       where: { id },
-      data: { nom, prenom, email, telephone, adresse }
+      data: updateData
     });
-    return res.json({ message: "Fiche client actualisée.", client: misAJour });
+    return res.json({ message: "Client mis à jour avec succès.", client: clientMisAJour });
   } catch (error) {
-    return res.status(500).json({ error: "Erreur lors de la mise à jour." });
+    return res.status(500).json({ error: "Erreur lors de la modification du client." });
   }
 });
 
-// Supprimer un client
+
+// 6. Supprimer un client
 app.delete('/api/clients/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
   try {
     const id = req.params.id as string;
@@ -205,6 +260,191 @@ app.delete('/api/clients/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR', 
     return res.json({ message: "Fiche client retirée du système." });
   } catch (error) {
     return res.status(500).json({ error: "Erreur lors de la suppression." });
+  }
+});
+
+
+// =========================================================================
+// 📦 SECTION LOGISTIQUE : MULTI-ENREGISTREMENT ET CALCULS EN RAFALE
+// =========================================================================
+
+// 1. Enregistrer un groupe de colis pour un client (avec transaction atomique)
+app.post('/api/colis/groupe', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
+  try {
+    const { expediteurId, colisList } = req.body; // colisList est un tableau d'objets colis
+
+    if (!expediteurId || !colisList || !Array.isArray(colisList) || colisList.length === 0) {
+      return res.status(400).json({ error: "Données logistiques incomplètes." });
+    }
+
+    const resultats = await prisma.$transaction(async (tx) => {
+      const colisEnregistres = [];
+
+      for (const item of colisList) {
+        const sousCategorie = await tx.sousCategorieColis.findUnique({
+          where: { id: item.sousCategorieId },
+          include: { categorie: true }
+        });
+
+        if (!sousCategorie) throw new Error(`Sous-catégorie introuvable pour l'un des colis.`);
+
+        const prixUnitaireApp = sousCategorie.prixUnitaire !== null ? sousCategorie.prixUnitaire : sousCategorie.categorie.prixUnitaire;
+        const mesureApp = sousCategorie.mesure !== null ? sousCategorie.mesure : sousCategorie.categorie.mesure;
+        const prixTotal = parseFloat(item.quantite) * prixUnitaireApp;
+
+        const codeSuivi = `DEBA-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+        const numeroFact = `FAC-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 100)}`;
+
+        const colis = await tx.colis.create({
+          data: {
+            codeSuivi,
+            description: item.description || null,
+            prixUnitaireApp,
+            mesureApp,
+            quantite: parseFloat(item.quantite),
+            prixTotal,
+            destination: item.destination,
+            sousCategorieId: item.sousCategorieId,
+            expediteurId,
+            dateDepot: new Date(),
+            dateEnvoi: new Date(),
+            dateReception: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+          }
+        });
+
+        await tx.facture.create({
+          data: {
+            numeroFact,
+            montant: prixTotal,
+            avance: item.avance ? parseFloat(item.avance) : 0,
+            estPaye: (item.avance ? parseFloat(item.avance) : 0) >= prixTotal,
+            colisId: colis.id
+          }
+        });
+
+        colisEnregistres.push(colis);
+      }
+
+      return colisEnregistres;
+    });
+
+    return res.status(201).json({ message: `${resultats.length} colis enregistrés avec factures.`, data: resultats });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message || "Erreur lors de la transaction d'envoi." });
+  }
+});
+
+// 2. Liste complète paginée, triée et filtrée des colis (Moteur de recherche multicritère)
+app.get('/api/colis', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limite = parseInt(req.query.limite as string) || 10;
+    const recherche = (req.query.recherche as string) || '';
+    const tri = (req.query.tri as string) || 'createdAt'; // client, categorie, sousCategorie, createdAt
+    const ordre = (req.query.ordre as string) || 'desc';
+
+    const skip = (page - 1) * limite;
+
+    // Définition dynamique des filtres de recherche textuelle
+    const dynamicWhere: any = {};
+    if (recherche) {
+      dynamicWhere.OR = [
+        { codeSuivi: { contains: recherche, mode: 'insensitive' } },
+        { destination: { contains: recherche, mode: 'insensitive' } },
+        { expediteur: { nom: { contains: recherche, mode: 'insensitive' } } },
+        { expediteur: { prenom: { contains: recherche, mode: 'insensitive' } } },
+        { sousCategorie: { nom: { contains: recherche, mode: 'insensitive' } } },
+        { sousCategorie: { categorie: { nom: { contains: recherche, mode: 'insensitive' } } } }
+      ];
+    }
+
+    // Définition dynamique du tri relationnel
+    let orderByObj: any = {};
+    if (tri === 'client') {
+      orderByObj = { expediteur: { nom: ordre } };
+    } else if (tri === 'categorie') {
+      orderByObj = { sousCategorie: { categorie: { nom: ordre } } };
+    } else if (tri === 'sousCategorie') {
+      orderByObj = { sousCategorie: { nom: ordre } };
+    } else {
+      orderByObj = { [tri]: ordre };
+    }
+
+    const [colis, total] = await prisma.$transaction([
+      prisma.colis.findMany({
+        where: dynamicWhere,
+        include: {
+          expediteur: true,
+          sousCategorie: { include: { categorie: true } },
+          facture: true
+        },
+        orderBy: orderByObj,
+        skip,
+        take: limite
+      }),
+      prisma.colis.count({ where: dynamicWhere })
+    ]);
+
+    return res.json({
+      total,
+      page,
+      pagesTotales: Math.ceil(total / limite),
+      data: colis
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur de récupération de l'inventaire logistique." });
+  }
+});
+
+// 3. Modifier les détails d'un colis
+app.put('/api/colis/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
+  try {
+    const id = req.params.id as string;
+    const { description, quantite, destination, statut, etatSortie } = req.body;
+
+    const colisAncien = await prisma.colis.findUnique({ where: { id }, include: { facture: true } });
+    if (!colisAncien) return res.status(404).json({ error: "Colis introuvable." });
+
+    const nouvelleQuantite = parseFloat(quantite);
+    const nouveauPrixTotal = nouvelleQuantite * colisAncien.prixUnitaireApp;
+
+    const colisMisAJour = await prisma.colis.update({
+      where: { id },
+      data: {
+        description,
+        quantite: nouvelleQuantite,
+        prixTotal: nouveauPrixTotal,
+        destination,
+        statut,
+        etatSortie
+      }
+    });
+
+    // Mettre à jour automatiquement le montant lié sur la Facture
+    if (colisAncien.facture) {
+      await prisma.facture.update({
+        where: { id: colisAncien.facture.id },
+        data: {
+          montant: nouveauPrixTotal,
+          estPaye: colisAncien.facture.avance >= nouveauPrixTotal
+        }
+      });
+    }
+
+    return res.json({ message: "Colis et facture ajustés.", colis: colisMisAJour });
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur lors de la modification du colis." });
+  }
+});
+
+// 4. Supprimer un colis
+app.delete('/api/colis/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR', 'GESTIONNAIRE']), async (req, res) => {
+  try {
+    const id = req.params.id as string;
+    await prisma.colis.delete({ where: { id } });
+    return res.json({ message: "Colis effacé de l'inventaire logistique." });
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur lors de la suppression du colis." });
   }
 });
 
@@ -385,25 +625,84 @@ app.put('/api/sous-categories/:id', verifierToken, autoriserRoles(['ADMINISTRATE
   }
 });
 
-// 6. Supprimer une Catégorie Colis (Cascade automatique vers les sous-catégories via Prisma)
+// 6. Supprimer une Catégorie Colis (Console Propre)
 app.delete('/api/categories/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR']), async (req, res) => {
   try {
     const id = req.params.id as string;
+
+    const colisLies = await prisma.colis.count({
+      where: { sousCategorie: { categorieId: id } }
+    });
+
+    if (colisLies > 0) {
+      // 💡 CORRECTION CONSOLE : On renvoie un code 200 (OK) mais avec success: false
+      return res.json({ 
+        success: false,
+        error: `Action refusée : Cette catégorie possède des sous-catégories actuellement associées à ${colisLies} colis archivés.` 
+      });
+    }
+
     await prisma.categorieColis.delete({ where: { id } });
-    return res.json({ message: "Catégorie et toutes ses sous-catégories supprimées avec succès." });
+    return res.json({ success: true, message: "La catégorie et ses sous-catégories ont été supprimées avec succès." });
+
   } catch (error) {
-    return res.status(500).json({ error: "Erreur lors de la suppression." });
+    return res.status(500).json({ error: "Erreur serveur lors de la suppression." });
   }
 });
 
-// 7. Supprimer uniquement une Sous-Catégorie Colis
+// 7. Supprimer uniquement une Sous-Catégorie Colis (Console Propre)
 app.delete('/api/sous-categories/:id', verifierToken, autoriserRoles(['ADMINISTRATEUR']), async (req, res) => {
   try {
     const id = req.params.id as string;
+
+    const colisLies = await prisma.colis.count({
+      where: { sousCategorieId: id }
+    });
+
+    if (colisLies > 0) {
+      // 💡 CORRECTION CONSOLE : On renvoie un code 200 (OK) mais avec success: false
+      return res.json({ 
+        success: false,
+        error: `Action refusée : Cette sous-catégorie tarifaire est actuellement affectée à ${colisLies} colis dans l'inventaire.` 
+      });
+    }
+
     await prisma.sousCategorieColis.delete({ where: { id } });
-    return res.json({ message: "Sous-catégorie supprimée avec succès." });
+    return res.json({ success: true, message: "La sous-catégorie a été retirée de la nomenclature." });
+
   } catch (error) {
-    return res.status(500).json({ error: "Erreur lors de la suppression." });
+    return res.status(500).json({ error: "Erreur serveur lors de la suppression." });
+  }
+});
+
+
+// 🌐 ROUTE PUBLIQUE : Accessible par n'importe quel internaute sans connexion
+app.get('/api/public/suivi/:code', async (req, res) => {
+  try {
+    const code = req.params.code as string;
+
+    const colis = await prisma.colis.findUnique({
+      where: { codeSuivi: code },
+      select: {
+        codeSuivi: true,
+        destination: true,
+        quantite: true,
+        mesureApp: true,
+        statut: true,
+        dateDepot: true,
+        dateReception: true,
+        etatSortie: true
+        // 💡 SÉCURITÉ : On omet volontairement les liaisons privées du client (nom, factures, montants)
+      }
+    });
+
+    if (!colis) {
+      return res.status(404).json({ error: "Aucun colis trouvé avec ce numéro de suivi." });
+    }
+
+    return res.json(colis);
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur lors de la récupération des données de transit." });
   }
 });
 

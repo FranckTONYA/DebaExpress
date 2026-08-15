@@ -122,6 +122,7 @@ export const ColisScalarFieldEnum = {
   mesureApp: 'mesureApp',
   quantite: 'quantite',
   prixTotal: 'prixTotal',
+  destination: 'destination',
   dateDepot: 'dateDepot',
   dateEnvoi: 'dateEnvoi',
   dateReception: 'dateReception',

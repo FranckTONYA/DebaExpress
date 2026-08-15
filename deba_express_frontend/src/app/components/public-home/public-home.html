@@ -1,0 +1,165 @@
+<div class="min-h-screen bg-[#F8FAFC] font-sans text-slate-800 antialiased relative">
+
+  <!-- ✈️ BARRE DE NAVIGATION MODERNE & RESPONSIVE -->
+  <nav class="bg-white border-b border-slate-100 sticky top-0 z-50 backdrop-blur-md bg-white/95">
+    <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <img src="logo.jpg" alt="Logo Deba Express" class="w-11 h-11 rounded-xl object-cover shadow-sm bg-white border border-slate-100">
+        <div>
+          <span class="font-black text-xl tracking-wider text-[#0A2540] block">DEBA EXPRESS</span>
+          <span class="text-[9px] font-bold text-blue-600 tracking-widest uppercase block -mt-1">By Air To Your Door</span>
+        </div>
+      </div>
+      <!-- Actions rapides adaptatives (Icônes seules sur mobile) -->
+      <div class="flex gap-2 sm:gap-3">
+        <a routerLink="/suivi" class="text-sm font-bold text-[#486581] border border-slate-200 bg-white hover:bg-slate-50 px-3 sm:px-5 py-2.5 rounded-xl shadow-xs transition-all flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span class="hidden sm:inline">Suivre un colis</span>
+        </a>
+        <a routerLink="/connexion" class="text-sm font-black text-white bg-[#0A2540] hover:bg-opacity-90 px-4 sm:px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 01-3-3h7a3 3 0 013 3v1"/></svg>
+          <span class="hidden sm:inline">Connexion</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 📥 ZONE PRINCIPALE COLLABORATIVE : TOUT EST VISIBLE EN HAUT -->
+  <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-10">
+    
+    <!-- 🚀 COLONNE GAUCHE (Prend 5 colonnes) : PRÉSENTATION LOGISTIQUE & CONTACT -->
+    <section class="lg:col-span-5 space-y-6 text-center lg:text-left pt-4">
+      <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-200/50 text-blue-700 px-4 py-2 rounded-full text-xs font-extrabold tracking-wide uppercase shadow-2xs mx-auto lg:mx-0">
+        <span>🇨🇦</span> Canada <span class="text-slate-400 font-normal">➔</span> Cameroun <span>🇨🇲</span>
+      </div>
+      
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0A2540] leading-tight tracking-tight">
+        Expédiez vos colis en toute sérénité de Porte à Porte
+      </h1>
+      
+      <p class="text-base text-slate-500 font-medium leading-relaxed">
+        Inspiré par vos exigences logistiques, Deba Express assure le transport sécurisé et ultra-rapide de vos colis intercontinentaux.
+      </p>
+
+      <div class="pt-2">
+        <a routerLink="/suivi" class="bg-blue-600 hover:bg-blue-500 text-white font-black px-6 py-3.5 rounded-xl shadow-md transition-all text-center flex items-center justify-center gap-3 w-full sm:w-fit cursor-pointer text-sm">
+          🚀 Lancer le Tracking d'un colis
+        </a>
+      </div>
+
+      <!-- Fiche Contact Manuscrite Compactée (Visibilité Augmentée) -->
+      <div class="bg-white rounded-2xl p-6 shadow-lg border border-slate-100 flex gap-4 items-center text-left relative mt-6">
+        <div class="p-3 bg-blue-50 text-blue-600 rounded-xl shrink-0 hidden sm:block">
+          <!-- 💡 Icône SVG agrandie à w-7 h-7 pour correspondre à la nouvelle taille de texte -->
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H5a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+        </div>
+        <div class="space-y-1">
+          <!-- 💡 Polices agrandies de manière proportionnelle -->
+          <p class="text-xs font-extrabold uppercase tracking-widest text-slate-400">Dépôt Officiel Hub</p>
+          <h3 class="text-lg font-black text-[#0A2540]">3520 Millwood Rd NW</h3>
+          <p class="text-sm font-bold text-slate-600">📞 Contact : <strong class="text-blue-600">+1 (691) 498-897</strong></p>
+        </div>
+      </div>
+
+      
+      <!-- Bouton d'ancre mobile pour indiquer aux smartphones que la suite est en bas -->
+      <div class="block lg:hidden pt-4">
+        <a href="#restrictions-zone" class="text-xs font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-full inline-flex items-center gap-1.5 animate-bounce">
+          <span>👇</span> Voir les interdictions douanières
+        </a>
+      </div>
+    </section>
+
+    <!-- 🚫 COLONNE DROITE (Prend 7 colonnes) : GRILLE DES RESTRICTIONS SÉCURISÉES -->
+    <section id="restrictions-zone" class="lg:col-span-7 space-y-4 bg-white/40 rounded-3xl p-2 lg:p-4 border border-dashed border-slate-200">
+      
+      <div class="bg-white rounded-2xl p-4 shadow-xs border border-slate-100 flex items-center gap-3">
+        <span class="text-2xl shrink-0">🚫</span>
+        <div>
+          <h2 class="text-base font-black text-[#0A2540] uppercase tracking-wide">Sécurité & Restrictions Douanières</h2>
+          <p class="text-xs text-slate-400 font-medium">Marchandises formellement interdites sous peine de saisie administrative.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+        
+        <!-- 🇨🇦 Carte Douane Canada -->
+        <div class="bg-white rounded-2xl p-5 shadow-xs border border-slate-100 border-t-4 border-red-600 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xl">🇨🇦</span>
+              <h3 class="text-sm font-black text-red-700">Depuis le Canada</h3>
+            </div>
+            <span class="bg-red-600 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded tracking-wider animate-pulse">Saisie</span>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center gap-2 p-2 bg-red-50/40 border border-red-100/30 rounded-lg text-xs font-bold text-slate-700">
+              <span>⛔</span> <span class="line-through decoration-red-500/50">Armes (Weapons)</span>
+            </div>
+            <div class="flex items-center gap-2 p-2 bg-red-50/40 border border-red-100/30 rounded-lg text-xs font-bold text-slate-700">
+              <span>⛔</span> <span class="line-through decoration-red-500/50">Plantes & Animaux</span>
+            </div>
+            <div class="flex items-center gap-2 p-2 bg-red-50/40 border border-red-100/30 rounded-lg text-xs font-bold text-slate-700">
+              <span>⛔</span> <span class="line-through decoration-red-500/50">Stupéfiants (Drugs)</span>
+            </div>
+            <div class="flex items-center gap-2 p-2 bg-red-50/40 border border-red-100/30 rounded-lg text-xs font-bold text-slate-700">
+              <span>⛔</span> <span class="line-through decoration-red-500/50">Matelas Usagés</span>
+            </div>
+            <div class="flex items-center gap-2 p-2 bg-red-50/40 border border-red-100/30 rounded-lg text-xs font-bold text-slate-700">
+              <span>⛔</span> <span class="line-through decoration-red-500/50">Pièces auto usagées</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🇨🇲 Carte Douane Cameroun -->
+        <div class="bg-white rounded-2xl p-5 shadow-xs border border-slate-100 border-t-4 border-red-600 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xl">🇨🇲</span>
+              <h3 class="text-sm font-black text-red-700">Vers le Cameroun</h3>
+            </div>
+            <span class="bg-red-600 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded tracking-wider animate-pulse">Saisie</span>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center gap-2 p-2 bg-red-50/40 border border-red-100/30 rounded-lg text-xs font-bold text-slate-700">
+              <span>⛔</span> <span class="line-through decoration-red-500/50">Drogues illicites</span>
+            </div>
+            <div class="flex items-center gap-2 p-2 bg-red-50/40 border border-red-100/30 rounded-lg text-xs font-bold text-slate-700">
+              <span>⛔</span> <span class="line-through decoration-red-500/50">Matériels offensants</span>
+            </div>
+            <div class="flex items-center gap-2 p-2 bg-red-50/40 border border-red-100/30 rounded-lg text-xs font-bold text-slate-700">
+              <span>⛔</span> <span class="line-through decoration-red-500/50">Déchets dangereux</span>
+            </div>
+            <div class="flex items-center gap-2 p-2 bg-red-50/40 border border-red-100/30 rounded-lg text-xs font-bold text-slate-700">
+              <span>⛔</span> <span class="line-through decoration-red-500/50">Vieux véhicules</span>
+            </div>
+            <div class="flex items-center gap-2 p-2 bg-red-50/40 border border-red-100/30 rounded-lg text-xs font-bold text-slate-700">
+              <span>⛔</span> <span class="line-through decoration-red-500/50">Faune sauvage</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ✈️ FOOTER PREMIUM LOGISTIQUE -->
+  <footer class="bg-[#0A2540] text-white py-12 text-center border-t border-slate-800 relative overflow-hidden">
+    <div class="max-w-4xl mx-auto px-4 space-y-3 relative z-10">
+      <p class="text-2xl md:text-4xl font-black tracking-widest uppercase italic text-slate-200">
+        " Air To Your Door "
+      </p>
+      <div class="w-12 h-0.5 bg-blue-500 mx-auto rounded-full"></div>
+
+      <p class="text-xs font-bold text-slate-400 uppercase tracking-widest pt-2">
+        Deba Express Premium Service Network © 2026 • Tous droits réservés.
+      </p>
+    </div>
+  </footer>
+
+</div>
