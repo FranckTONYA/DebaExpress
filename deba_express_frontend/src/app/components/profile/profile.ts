@@ -1,6 +1,7 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
+import { API_URL } from '../../app.config';
 
 @Component({
   selector: 'app-profile',
@@ -10,6 +11,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractContro
 })
 export class ProfileComponent implements OnInit {
   private http = inject(HttpClient);
+  private apiUrl = inject(API_URL); 
   private fb = inject(FormBuilder);
 
   profileForm!: FormGroup;
@@ -51,7 +53,7 @@ export class ProfileComponent implements OnInit {
   }
 
   chargerMonProfil() {
-    this.http.get<any>('http://localhost:3000/api/profil/moi').subscribe({
+    this.http.get<any>(`${this.apiUrl}/profil/moi`).subscribe({
       next: (user) => {
         this.profileForm.patchValue({
           nom: user.nom,
@@ -75,7 +77,7 @@ export class ProfileComponent implements OnInit {
     this.erreurMessage.set(null);
     this.succesMessage.set(null);
 
-    this.http.put<any>('http://localhost:3000/api/profil/moi', this.profileForm.value)
+    this.http.put<any>(`${this.apiUrl}/profil/moi`, this.profileForm.value)
       .subscribe({
         next: (res) => {
           this.isLoading.set(false);

@@ -707,7 +707,17 @@ app.get('/api/public/suivi/:code', async (req, res) => {
 });
 
 
+// app.listen(PORT, () => {
+//   console.log(`🚀 Serveur backend lancé sur http://localhost:${PORT}`);
+// });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Serveur backend lancé sur http://localhost:${PORT}`);
-});
+if (process.env.VERCEL) {
+  // En production sur Vercel, on exporte simplement l'application
+  module.exports = app;
+} else {
+  // En local sur votre machine, le serveur démarre normalement sur un port
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Serveur local démarré sur http://localhost:${PORT}`);
+  });
+}

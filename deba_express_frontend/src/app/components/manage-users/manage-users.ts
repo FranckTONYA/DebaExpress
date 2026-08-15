@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { API_URL } from '../../app.config';
 
 @Component({
   selector: 'app-manage-users',
@@ -11,6 +12,7 @@ import { DatePipe } from '@angular/common';
 })
 export class ManageUsersComponent implements OnInit {
   private http = inject(HttpClient);
+  private apiUrl = inject(API_URL); 
   private fb = inject(FormBuilder);
 
   utilisateurs = signal<any[]>([]);
@@ -44,7 +46,7 @@ export class ManageUsersComponent implements OnInit {
   }
 
   chargerUtilisateurs() {
-    this.http.get<any[]>('http://localhost:3000/api/utilisateurs')
+    this.http.get<any[]>(`${this.apiUrl}/utilisateurs`)
       .subscribe({
         next: (donnees) => this.utilisateurs.set(donnees),
         error: () => alert('Privilèges insuffisants.')
@@ -82,7 +84,7 @@ export class ManageUsersComponent implements OnInit {
     if (this.userForm.invalid) return;
 
     const id = this.userForm.value.id;
-    this.http.put(`http://localhost:3000/api/utilisateurs/${id}`, this.userForm.value)
+    this.http.put(`${this.apiUrl}/utilisateurs/${id}`, this.userForm.value)
       .subscribe({
         next: () => {
           this.succesMessage.set('Compte de l’agent actualisé avec succès.');
@@ -95,7 +97,7 @@ export class ManageUsersComponent implements OnInit {
 
   supprimerUtilisateur(id: string) {
     if (!confirm('🛑 Révoquer définitivement les accès réseau de cet agent ?')) return;
-    this.http.delete(`http://localhost:3000/api/utilisateurs/${id}`).subscribe({
+    this.http.delete(`${this.apiUrl}/utilisateurs/${id}`).subscribe({
       next: () => this.chargerUtilisateurs(),
       error: () => alert('Erreur de suppression.')
     });

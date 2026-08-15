@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { API_URL } from '../../app.config';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,6 +12,9 @@ import { AuthService } from '../../services/auth.service';
 })
 export class DashboardComponent implements OnInit {
   private http = inject(HttpClient);
+    // RÉCUPÉRATION DYNAMIQUE : Angular injecte la bonne adresse selon le mode (dev ou prod)
+  private apiUrl = inject(API_URL); 
+
   private fb = inject(FormBuilder);
   public authService = inject(AuthService);
 
@@ -89,7 +93,7 @@ export class DashboardComponent implements OnInit {
   }
 
   chargerNomenclature() {
-    this.http.get<any[]>('http://localhost:3000/api/categories').subscribe({
+    this.http.get<any[]>(`${this.apiUrl}/categories`).subscribe({
       next: (data) => this.categories.set(data)
     });
   }
@@ -101,7 +105,7 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    this.http.get<any>(`http://localhost:3000/api/clients/recherche/${numero}`).subscribe({
+    this.http.get<any>(`${this.apiUrl}/clients/recherche/${numero}`).subscribe({
       next: (client) => {
         this.clientDetecte.set(client);
         this.erreurMessage.set(null);
@@ -139,7 +143,7 @@ verifierDoublonEtEnregistrer() {
       telephone: this.fretForm.get('telephone')?.value
     };
 
-    this.http.post<any>('http://localhost:3000/api/clients/verifier-doublon', clientPayload).subscribe({
+    this.http.post<any>(`${this.apiUrl}/clients/verifier-doublon`, clientPayload).subscribe({
       next: (res) => {
         if (res.existe) {
           // 💡 CORRECTION : On extrait .client pour enregistrer l'expéditeur en direct dans le signal
@@ -151,7 +155,7 @@ verifierDoublonEtEnregistrer() {
             adresse: this.fretForm.get('adresse')?.value || '', 
             dateNaissance: this.fretForm.get('dateNaissance')?.value || '' 
           };
-          this.http.post<any>('http://localhost:3000/api/clients', completPayload).subscribe({
+          this.http.post<any>(`${this.apiUrl}/clients`, completPayload).subscribe({
             next: (nouveau) => this.soumettreEnvoiVersBase(nouveau.id),
             error: (err) => this.erreurMessage.set(err.error?.error || 'Erreur lors de la création du client.')
           });
@@ -166,7 +170,7 @@ verifierDoublonEtEnregistrer() {
     this.isLoading.set(true);
     const finalPayload = { expediteurId: idExpediteur, colisList: this.fretForm.value.colisList };
 
-    this.http.post('http://localhost:3000/api/colis/groupe', finalPayload).subscribe({
+    this.http.post(`${this.apiUrl}/colis/groupe`, finalPayload).subscribe({
       next: () => {
         this.isLoading.set(false);
         this.succesMessage.set('Bordereau multi-colis enregistré et facturé avec succès !');

@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { RouterLink } from '@angular/router';
+import { API_URL } from '../../app.config';
 
 @Component({
   selector: 'app-connexion',
@@ -13,6 +14,7 @@ import { RouterLink } from '@angular/router';
 })
 export class ConnexionComponent {
   private http = inject(HttpClient);
+   private apiUrl = inject(API_URL); 
   private router = inject(Router);
   private authService = inject(AuthService);
 
@@ -37,7 +39,7 @@ export class ConnexionComponent {
     this.isLoading.set(true);
     this.erreurMessage.set(null);
 
-    this.http.post<{ token: string; role: string }>('http://localhost:3000/api/auth/connexion', {
+    this.http.post<{ token: string; role: string }>(`${this.apiUrl}/auth/connexion`, {
       email: this.email(),
       motDePasse: this.motDePasse()
     }).subscribe({

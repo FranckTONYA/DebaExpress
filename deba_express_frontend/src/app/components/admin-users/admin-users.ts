@@ -1,6 +1,7 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { API_URL } from '../../app.config';
 
 @Component({
   selector: 'app-admin-users',
@@ -11,6 +12,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 })
 export class AdminUsersComponent implements OnInit {
   private http = inject(HttpClient);
+    private apiUrl = inject(API_URL); 
   private fb = inject(FormBuilder);
 
   userForm!: FormGroup;
@@ -45,7 +47,7 @@ export class AdminUsersComponent implements OnInit {
     this.succesMessage.set(null);
 
     // L'intercepteur HTTP global injectera automatiquement le token JWT d'administration
-    this.http.post<any>('http://localhost:3000/api/utilisateurs', this.userForm.value)
+    this.http.post<any>(`${this.apiUrl}/utilisateurs`, this.userForm.value)
       .subscribe({
         next: (res) => {
           this.isLoading.set(false);

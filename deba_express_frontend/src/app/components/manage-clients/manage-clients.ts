@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { API_URL } from '../../app.config';
 
 @Component({
   selector: 'app-manage-clients',
@@ -11,6 +12,7 @@ import { DatePipe } from '@angular/common';
 })
 export class ManageClientsComponent implements OnInit {
   private http = inject(HttpClient);
+  private apiUrl = inject(API_URL); 
   private fb = inject(FormBuilder);
 
   clients = signal<any[]>([]);
@@ -39,7 +41,7 @@ export class ManageClientsComponent implements OnInit {
   }
 
   chargerClients() {
-    this.http.get<any[]>('http://localhost:3000/api/clients')
+    this.http.get<any[]>(`${this.apiUrl}/clients`)
       .subscribe({
         next: (donnees) => this.clients.set(donnees),
         error: () => this.erreurMessage.set('Erreur de chargement des clients.')
@@ -80,7 +82,7 @@ export class ManageClientsComponent implements OnInit {
     if (this.clientForm.invalid) return;
 
     const id = this.clientForm.value.id;
-    this.http.put(`http://localhost:3000/api/clients/${id}`, this.clientForm.value)
+    this.http.put(`${this.apiUrl}/clients/${id}`, this.clientForm.value)
       .subscribe({
         next: () => {
           this.succesMessage.set('Fiche client mise à jour.');
@@ -93,7 +95,7 @@ export class ManageClientsComponent implements OnInit {
 
   supprimerClient(id: string) {
     if (!confirm('🚨 Confirmer la suppression définitive de ce client ?')) return;
-    this.http.delete(`http://localhost:3000/api/clients/${id}`).subscribe({
+    this.http.delete(`${this.apiUrl}/clients/${id}`).subscribe({
       next: () => this.chargerClients(),
       error: () => alert('Erreur de suppression.')
     });

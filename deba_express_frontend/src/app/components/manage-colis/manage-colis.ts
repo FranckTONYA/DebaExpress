@@ -1,6 +1,7 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { API_URL } from '../../app.config';
 
 @Component({
   selector: 'app-manage-colis',
@@ -10,6 +11,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } 
 })
 export class ManageColisComponent implements OnInit {
   private http = inject(HttpClient);
+  private apiUrl = inject(API_URL); 
   private fb = inject(FormBuilder);
 
   // Signaux réactifs pour la pagination et le filtrage
@@ -39,7 +41,7 @@ export class ManageColisComponent implements OnInit {
   }
 
   chargerInventaire() {
-    const url = `http://localhost:3000/api/colis?page=${this.pageActuelle()}&limite=10&recherche=${this.recherche()}&tri=${this.critereTri()}&ordre=${this.ordreTri()}`;
+    const url = `${this.apiUrl}/colis?page=${this.pageActuelle()}&limite=10&recherche=${this.recherche()}&tri=${this.critereTri()}&ordre=${this.ordreTri()}`;
     this.http.get<any>(url).subscribe({
       next: (res) => {
         this.colisList.set(res.data);
@@ -83,7 +85,7 @@ export class ManageColisComponent implements OnInit {
   sauvegarderModif() {
     if (this.editForm.invalid) return;
     const id = this.editForm.value.id;
-    this.http.put(`http://localhost:3000/api/colis/${id}`, this.editForm.value).subscribe({
+    this.http.put(`${this.apiUrl}/colis/${id}`, this.editForm.value).subscribe({
       next: () => {
         this.chargerInventaire();
         this.colisEnEdition.set(null);
@@ -93,7 +95,7 @@ export class ManageColisComponent implements OnInit {
 
   supprimerColis(id: string) {
     if (!confirm('🗑️ Supprimer définitivement ce colis ? Sa facture liée sera également purgée.')) return;
-    this.http.delete(`http://localhost:3000/api/colis/${id}`).subscribe({
+    this.http.delete(`${this.apiUrl}/colis/${id}`).subscribe({
       next: () => this.chargerInventaire()
     });
   }

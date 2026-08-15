@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { API_URL } from '../../app.config';
 
 @Component({
   selector: 'app-public-tracking',
@@ -12,6 +13,7 @@ import { RouterLink } from '@angular/router';
 })
 export class PublicTrackingComponent {
   private http = inject(HttpClient);
+  private apiUrl = inject(API_URL); 
 
   codeSaisi = signal<string>('');
   colisTrouve = signal<any | null>(null);
@@ -28,7 +30,7 @@ export class PublicTrackingComponent {
     this.colisTrouve.set(null);
 
     // 💡 Appel de la route publique du backend
-    this.http.get<any>(`http://localhost:3000/api/public/suivi/${code}`).subscribe({
+    this.http.get<any>(`${this.apiUrl}/public/suivi/${code}`).subscribe({
       next: (colis) => {
         this.isLoading.set(false);
         this.colisTrouve.set(colis);

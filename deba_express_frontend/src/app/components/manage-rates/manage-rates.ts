@@ -1,6 +1,7 @@
 import { Component, inject, signal, OnInit, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { API_URL } from '../../app.config';
 
 @Component({
   selector: 'app-manage-rates',
@@ -11,6 +12,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } 
 })
 export class ManageRatesComponent implements OnInit {
   private http = inject(HttpClient);
+  private apiUrl = inject(API_URL); 
   private fb = inject(FormBuilder);
 
   categories = signal<any[]>([]);
@@ -91,7 +93,7 @@ export class ManageRatesComponent implements OnInit {
   }
 
   chargerNomenclature() {
-    this.http.get<any[]>('http://localhost:3000/api/categories').subscribe(data => this.categories.set(data));
+    this.http.get<any[]>(`${this.apiUrl}/categories`).subscribe(data => this.categories.set(data));
   }
 
   creerCategorie() {
@@ -100,7 +102,7 @@ export class ManageRatesComponent implements OnInit {
       this.catForm.markAllAsTouched();
       return;
     }
-    this.http.post('http://localhost:3000/api/categories', this.catForm.value).subscribe({
+    this.http.post(`${this.apiUrl}/categories`, this.catForm.value).subscribe({
       next: (res: any) => {
         this.chargerNomenclature();
         this.succesMessage.set(`La catégorie racine "${res.nom}" a été créée avec succès !`);
@@ -117,7 +119,7 @@ export class ManageRatesComponent implements OnInit {
       return;
     }
     const payload = { ...this.subForm.value, categorieId: catId };
-    this.http.post('http://localhost:3000/api/sous-categories', payload).subscribe({
+    this.http.post(`${this.apiUrl}/sous-categories`, payload).subscribe({
       next: (res: any) => {
         this.chargerNomenclature();
         this.succesMessage.set(`La sous-catégorie "${res.nom}" a été ajoutée.`);
@@ -146,7 +148,7 @@ export class ManageRatesComponent implements OnInit {
       return;
     }
     const id = this.editCatForm.value.id;
-    this.http.put(`http://localhost:3000/api/categories/${id}`, this.editCatForm.value).subscribe({
+    this.http.put(`${this.apiUrl}/categories/${id}`, this.editCatForm.value).subscribe({
       next: (res: any) => {
         this.chargerNomenclature();
         this.modalCatSelectionnee.set(null);
@@ -174,7 +176,7 @@ export class ManageRatesComponent implements OnInit {
       return;
     }
     const id = this.editSubForm.value.id;
-    this.http.put(`http://localhost:3000/api/sous-categories/${id}`, this.editSubForm.value).subscribe({
+    this.http.put(`${this.apiUrl}/sous-categories/${id}`, this.editSubForm.value).subscribe({
       next: (res: any) => {
         this.chargerNomenclature();
         this.modalSubSelectionnee.set(null);
@@ -188,7 +190,7 @@ export class ManageRatesComponent implements OnInit {
     this.nettoyerMessages();
     if (!confirm('🚨 Supprimer cette catégorie et toutes ses sous-catégories ?')) return;
 
-    this.http.delete<any>(`http://localhost:3000/api/categories/${id}`).subscribe({
+    this.http.delete<any>(`${this.apiUrl}/categories/${id}`).subscribe({
       next: (res) => {
         if (res.success === false) {
           // Si le backend a bloqué l'action de sécurité
@@ -207,7 +209,7 @@ export class ManageRatesComponent implements OnInit {
     this.nettoyerMessages();
     if (!confirm('Supprimer cette sous-catégorie tarifaire ?')) return;
 
-    this.http.delete<any>(`http://localhost:3000/api/sous-categories/${id}`).subscribe({
+    this.http.delete<any>(`${this.apiUrl}/sous-categories/${id}`).subscribe({
       next: (res) => {
         if (res.success === false) {
           // Si le backend a bloqué l'action de sécurité
