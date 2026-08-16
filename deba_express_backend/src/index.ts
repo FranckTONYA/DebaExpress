@@ -711,15 +711,12 @@ app.get('/api/public/suivi/:code', async (req, res) => {
 //   console.log(`🚀 Serveur backend lancé sur http://localhost:${PORT}`);
 // });
 
-if (process.env.VERCEL) {
-  // En production sur Vercel, on exporte simplement l'application
-  module.exports = app;
-} else {
-  // En local sur votre machine, le serveur démarre normalement sur un port
-  const PORT = process.env.PORT || 3000;
+if (!process.env.VERCEL) {
+  // On démarre le serveur local uniquement si on n'est PAS sur Vercel
   app.listen(PORT, () => {
-    console.log(`🚀 Serveur local démarré sur http://localhost:${PORT}`);
+    console.log(`🚀 Serveur local DebaExpress actif sur http://localhost:${PORT}`);
   });
 }
 
+// L'export par défaut suffit amplement pour Vercel sous "type": "module"
 export default app;
