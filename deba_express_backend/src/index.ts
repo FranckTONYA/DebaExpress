@@ -711,13 +711,27 @@ app.get('/api/public/suivi/:code', async (req, res) => {
 //   console.log(`🚀 Serveur backend lancé sur http://localhost:${PORT}`);
 // });
 
-if (process.env.VERCEL) {
-  // En production sur Vercel, on exporte simplement l'application
-  module.exports = app;
-} else {
-  // En local sur votre machine, le serveur démarre normalement sur un port
-  const PORT = process.env.PORT || 3000;
+// if (process.env.VERCEL) {
+//   // En production sur Vercel, on exporte simplement l'application
+//   module.exports = app;
+// } else {
+//   // En local sur votre machine, le serveur démarre normalement sur un port
+//   const PORT = process.env.PORT || 3000;
+//   app.listen(PORT, () => {
+//     console.log(`🚀 Serveur local démarré sur http://localhost:${PORT}`);
+//   });
+// }
+
+// =========================================================================
+// 🚀 EXPORT ET ÉCOUTE DU SERVEUR (index.ts)
+// =========================================================================
+
+if (!process.env.VERCEL) {
+  // On écoute le port UNIQUEMENT en local pour ne pas bloquer Vercel
   app.listen(PORT, () => {
-    console.log(`🚀 Serveur local démarré sur http://localhost:${PORT}`);
+    console.log(`🚀 Serveur Deba Express fonctionnel sur http://localhost:${PORT}`);
   });
 }
+
+// Export par défaut requis par @vercel/node en mode ESM
+export default app;
