@@ -25,7 +25,22 @@ const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-app.use(cors());
+// app.use(cors());
+// 🔒 Middleware CORS Manuel (Ultra robuste pour Vercel Serverless)
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://deba-express-frontend.vercel.app');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  // Si c'est une requête OPTIONS (Preflight), on répond immédiatement 200 sans aller plus loin
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  next();
+});
+
 app.use(express.json());
 
 // 🔍 Route de diagnostic global
