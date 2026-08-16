@@ -12,8 +12,7 @@
   ],
   "functions": {
     "api/index.ts": {
-      "includeFiles": "src/generated/client/**/*",
-      "maxDuration": 15
+      "includeFiles": "src/generated/client/**"
     }
   },
   "headers": [
