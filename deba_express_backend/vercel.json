@@ -12,11 +12,9 @@
   ],
   "functions": {
     "api/index.ts": {
+      "includeFiles": "src/generated/client/**",
       "memory": 1024,
-      "maxDuration": 10,
-      "config": {
-        "includeFiles": "src/generated/client/**"
-      }
+      "maxDuration": 10
     }
   },
   "headers": [
