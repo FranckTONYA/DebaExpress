@@ -721,3 +721,5 @@ if (process.env.VERCEL) {
     console.log(`🚀 Serveur local démarré sur http://localhost:${PORT}`);
   });
 }
+
+export default app;
