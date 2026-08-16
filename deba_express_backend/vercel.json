@@ -10,6 +10,15 @@
       "destination": "api/index.ts"
     }
   ],
+  "functions": {
+    "api/index.ts": {
+      "memory": 1024,
+      "maxDuration": 10,
+      "config": {
+        "includeFiles": "src/generated/client/**"
+      }
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",
