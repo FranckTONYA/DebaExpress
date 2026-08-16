@@ -25,22 +25,7 @@ const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-// app.use(cors());
-// 🔒 Middleware CORS Manuel (Ultra robuste pour Vercel Serverless)
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://deba-express-frontend.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-
-  // Si c'est une requête OPTIONS (Preflight), on répond immédiatement 200 sans aller plus loin
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-  next();
-});
-
+app.use(cors());
 app.use(express.json());
 
 // 🔍 Route de diagnostic global
@@ -726,27 +711,13 @@ app.get('/api/public/suivi/:code', async (req, res) => {
 //   console.log(`🚀 Serveur backend lancé sur http://localhost:${PORT}`);
 // });
 
-// if (process.env.VERCEL) {
-//   // En production sur Vercel, on exporte simplement l'application
-//   module.exports = app;
-// } else {
-//   // En local sur votre machine, le serveur démarre normalement sur un port
-//   const PORT = process.env.PORT || 3000;
-//   app.listen(PORT, () => {
-//     console.log(`🚀 Serveur local démarré sur http://localhost:${PORT}`);
-//   });
-// }
-
-// =========================================================================
-// 🚀 EXPORT ET ÉCOUTE DU SERVEUR (index.ts)
-// =========================================================================
-
-if (!process.env.VERCEL) {
-  // On écoute le port UNIQUEMENT en local pour ne pas bloquer Vercel
+if (process.env.VERCEL) {
+  // En production sur Vercel, on exporte simplement l'application
+  module.exports = app;
+} else {
+  // En local sur votre machine, le serveur démarre normalement sur un port
+  const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
-    console.log(`🚀 Serveur Deba Express fonctionnel sur http://localhost:${PORT}`);
+    console.log(`🚀 Serveur local démarré sur http://localhost:${PORT}`);
   });
 }
-
-// Export par défaut requis par @vercel/node en mode ESM
-export default app;
