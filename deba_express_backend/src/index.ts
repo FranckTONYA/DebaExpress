@@ -20,27 +20,10 @@ if (!process.env.DATABASE_URL) {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 🔒 GESTION DU POOL DE CONNEXION POSTGRESQL OPTIMISÉE POUR VERCEL SERVERLESS
-let prisma: PrismaClient;
-
-if (process.env.VERCEL) {
-  // En production sur Vercel : recyclage agressif des connexions pour épargner Alwaysdata (Plan Gratuit 100 Mo)
-  const pool = new pg.Pool({ 
-    connectionString: process.env.DATABASE_URL,
-    max: 2, // Limite le nombre de connexions simultanées par fonction instanciée
-    idleTimeoutMillis: 1000 // Ferme immédiatement la connexion dès que la requête HTTP prend fin
-  });
-  const adapter = new PrismaPg(pool);
-  prisma = new PrismaClient({ adapter });
-} else {
-  // En développement local : mécanisme Singleton classique pour préserver l'instance lors du Live Reload
-  if (!(global as any).globalPrisma) {
-    const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
-    const adapter = new PrismaPg(pool);
-    (global as any).globalPrisma = new PrismaClient({ adapter });
-  }
-  prisma = (global as any).globalPrisma;
-}
+// Configuration de la connexion brute et de l'adaptateur requis par Prisma 7
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 app.use(cors());
 app.use(express.json());
